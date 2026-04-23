@@ -1,6 +1,7 @@
 package br.com.sistema_frete.DAO;
 
 import br.com.sistema_frete.enums.cliente.StatusCliente;
+import br.com.sistema_frete.enums.cliente.TipoCliente;
 import br.com.sistema_frete.model.Cliente;
 import br.com.sistema_frete.util.ConnectionFactory;
 
@@ -122,9 +123,9 @@ public class ClienteDAO {
     }
 
     public Cliente buscarPorId(Integer id) {
-        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, status " +
-                     "FROM cliente " +
-                     "WHERE id = ?";
+        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, inscricao_estadual, tipo, " +
+                     "logradouro, numero, complemento, bairro, municipio, uf, cep, telefone, email, status " +
+                     "FROM cliente WHERE id = ?";
 
         try (Connection conn = new ConnectionFactory().recuperarConexao();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -134,10 +135,26 @@ public class ClienteDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Cliente cliente = new Cliente();
+
                     cliente.setId(rs.getInt("id"));
                     cliente.setRazaoSocial(rs.getString("razao_social"));
                     cliente.setNomeFantasia(rs.getString("nome_fantasia"));
                     cliente.setCnpj(rs.getString("cnpj"));
+                    cliente.setInscricaoEstadual(rs.getString("inscricao_estadual"));
+                    cliente.setLogradouro(rs.getString("logradouro"));
+                    cliente.setNumero(rs.getString("numero"));
+                    cliente.setComplemento(rs.getString("complemento"));
+                    cliente.setBairro(rs.getString("bairro"));
+                    cliente.setMunicipio(rs.getString("municipio"));
+                    cliente.setUf(rs.getString("uf"));
+                    cliente.setCep(rs.getString("cep"));
+                    cliente.setTelefone(rs.getString("telefone"));
+                    cliente.setEmail(rs.getString("email"));
+
+                    String tipo = rs.getString("tipo");
+                    if (tipo != null && !tipo.trim().isEmpty()) {
+                        cliente.setTipo(TipoCliente.valueOf(tipo));
+                    }
 
                     String status = rs.getString("status");
                     if (status != null && !status.trim().isEmpty()) {

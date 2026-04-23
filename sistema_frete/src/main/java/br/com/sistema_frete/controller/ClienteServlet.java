@@ -1,6 +1,7 @@
 package br.com.sistema_frete.controller;
 
 import br.com.sistema_frete.BO.ClienteBO;
+import br.com.sistema_frete.DAO.ClienteDAO;
 import br.com.sistema_frete.enums.cliente.StatusCliente;
 import br.com.sistema_frete.enums.cliente.TipoCliente;
 import br.com.sistema_frete.exception.CadastroException;
@@ -20,6 +21,7 @@ public class ClienteServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private final ClienteBO clienteBO = new ClienteBO();
+    private final ClienteDAO clienteDAO = new ClienteDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -28,13 +30,18 @@ public class ClienteServlet extends HttpServlet {
         String acao = request.getParameter("acao");
 
         try {
-            if ("excluir".equalsIgnoreCase(acao)) {
-                excluir(request, response);
+            if ("novo".equalsIgnoreCase(acao)) {
+                request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
                 return;
             }
 
-            if ("novo".equalsIgnoreCase(acao)) {
-                request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
+            if ("editar".equalsIgnoreCase(acao)) {
+                editar(request, response);
+                return;
+            }
+
+            if ("excluir".equalsIgnoreCase(acao)) {
+                excluir(request, response);
                 return;
             }
 
@@ -49,7 +56,7 @@ public class ClienteServlet extends HttpServlet {
             request.setAttribute("voltarUrl", request.getContextPath() + "/clientes");
             request.getRequestDispatcher("/erro.jsp").forward(request, response);
         } catch (Exception e) {
-            System.err.println("Erro inesperado no ClienteController:");
+            System.err.println("Erro inesperado no ClienteServlet:");
             e.printStackTrace();
 
             request.setAttribute("mensagemErro", "Ocorreu um erro inesperado ao processar clientes.");
@@ -69,7 +76,19 @@ public class ClienteServlet extends HttpServlet {
 
             clienteBO.salvar(cliente);
 
-            response.sendRedirect(request.getContextPath() + "/clientes");
+            String filtroRetorno = request.getParameter("filtroRetorno");
+            String paginaRetorno = request.getParameter("paginaRetorno");
+            String registrosPorPaginaRetorno = request.getParameter("registrosPorPaginaRetorno");
+
+            request.getSession().setAttribute("sucesso",
+                    cliente.getId() != null ? "Cliente atualizado com sucesso." : "Cliente cadastrado com sucesso.");
+
+            StringBuilder redirect = new StringBuilder(request.getContextPath() + "/clientes");
+            redirect.append("?filtro=").append(filtroRetorno != null ? filtroRetorno : "");
+            redirect.append("&pagina=").append(paginaRetorno != null && !paginaRetorno.isEmpty() ? paginaRetorno : "1");
+            redirect.append("&registrosPorPagina=").append(registrosPorPaginaRetorno != null && !registrosPorPaginaRetorno.isEmpty() ? registrosPorPaginaRetorno : "10");
+
+            response.sendRedirect(redirect.toString());
 
         } catch (CadastroException e) {
             request.setAttribute("erro", e.getMessage());
@@ -125,7 +144,37 @@ public class ClienteServlet extends HttpServlet {
         request.setAttribute("filtro", filtro);
         request.setAttribute("registrosPorPagina", registrosPorPagina);
 
+        String sucesso = (String) request.getSession().getAttribute("sucesso");
+        if (sucesso != null) {
+            request.setAttribute("sucesso", sucesso);
+            request.getSession().removeAttribute("sucesso");
+        }
+        
         request.getRequestDispatcher("/listaClientes.jsp").forward(request, response);
+    }
+
+    private void editar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, NegocioException {
+
+        Integer id = parseIntegerOrNull(request.getParameter("id"));
+
+        if (id == null) {
+            throw new NegocioException("ID do cliente não informado.");
+        }
+
+        Cliente cliente = clienteDAO.buscarPorId(id);
+
+        if (cliente == null) {
+            throw new NegocioException("Cliente não encontrado.");
+        }
+
+        request.setAttribute("cliente", cliente);
+        
+        request.setAttribute("filtro", request.getParameter("filtro"));
+        request.setAttribute("paginaAtual", request.getParameter("pagina"));
+        request.setAttribute("registrosPorPagina", request.getParameter("registrosPorPagina"));
+        
+        request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
     }
 
     private void excluir(HttpServletRequest request, HttpServletResponse response)
@@ -138,6 +187,7 @@ public class ClienteServlet extends HttpServlet {
         }
 
         clienteBO.excluir(id);
+        request.getSession().setAttribute("sucesso", "Cliente excluído com sucesso.");
         response.sendRedirect(request.getContextPath() + "/clientes");
     }
 

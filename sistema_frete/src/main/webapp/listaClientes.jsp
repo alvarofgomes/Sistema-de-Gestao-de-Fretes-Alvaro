@@ -26,6 +26,14 @@
             margin-bottom: 15px;
         }
 
+        .msg-sucesso {
+            background: #d1e7dd;
+            color: #0f5132;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
         .filtro-form {
             margin-bottom: 20px;
         }
@@ -57,9 +65,17 @@
         }
 
         .acoes a {
-            color: #c0392b;
             text-decoration: none;
             font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .link-editar {
+            color: #0d6efd;
+        }
+
+        .link-excluir {
+            color: #c0392b;
         }
 
         .paginacao {
@@ -76,14 +92,28 @@
             text-align: center;
         }
     </style>
+
+    <script>
+        function confirmarExclusao(nome, url) {
+            if (confirm("Deseja realmente excluir o cliente \"" + nome + "\"?")) {
+                window.location.href = url;
+            }
+        }
+    </script>
 </head>
 <body>
 
 <div class="topo">
-    <a href="${pageContext.request.contextPath}/clientes?acao=novo" class="btn-novo">
+    <a href="${pageContext.request.contextPath}/clientes?acao=novo&filtro=${filtro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}" class="btn-novo">
         Novo Cliente
     </a>
 </div>
+
+<c:if test="${not empty sucesso}">
+    <div class="msg-sucesso">
+        ${sucesso}
+    </div>
+</c:if>
 
 <form action="${pageContext.request.contextPath}/clientes" method="get" class="filtro-form">
     <label for="filtro">Nome / Razão Social:</label>
@@ -117,8 +147,14 @@
                         <td>${cliente.cnpj}</td>
                         <td>${cliente.status}</td>
                         <td class="acoes">
-                            <a href="${pageContext.request.contextPath}/clientes?acao=excluir&id=${cliente.id}"
-                               onclick="return confirm('Tem certeza que deseja excluir este cliente?');">
+                            <a class="link-editar"
+                               href="${pageContext.request.contextPath}/clientes?acao=editar&id=${cliente.id}&filtro=${filtro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}">
+                                Editar
+                            </a>
+
+                            <a class="link-excluir"
+                               href="javascript:void(0);"
+                               onclick="confirmarExclusao('${cliente.razaoSocial}', '${pageContext.request.contextPath}/clientes?acao=excluir&id=${cliente.id}')">
                                 Excluir
                             </a>
                         </td>
