@@ -13,65 +13,75 @@ import br.com.sistema_frete.util.ConnectionFactory;
 
 public class VeiculoDAO {
 
-    public List<Veiculo> buscarComPaginacao(String filtro, int offset, int limit) {
-        List<Veiculo> veiculos = new ArrayList<Veiculo>();
+	public List<Veiculo> buscarComPaginacao(String filtro, String statusFiltro, int offset, int limit) {
+	    List<Veiculo> veiculos = new ArrayList<Veiculo>();
 
-        String sql = "SELECT id, placa, rntrc, ano_fabricacao, tipo, tara_kg, capacidade_kg, volume_m3, status " +
-                     "FROM veiculo " +
-                     "WHERE placa ILIKE ? OR rntrc ILIKE ? " +
-                     "ORDER BY placa ASC " +
-                     "LIMIT ? OFFSET ?";
+	    String sql = "SELECT id, placa, rntrc, ano_fabricacao, tipo, tara_kg, capacidade_kg, volume_m3, status " +
+	                 "FROM veiculo " +
+	                 "WHERE (placa ILIKE ? OR rntrc ILIKE ?) " +
+	                 "AND (? IS NULL OR ? = '' OR status = ?) " +
+	                 "ORDER BY placa ASC " +
+	                 "LIMIT ? OFFSET ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+	    try (Connection conn = new ConnectionFactory().recuperarConexao();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            String filtroTratado = filtro == null ? "" : filtro.trim();
-            String filtroLike = "%" + filtroTratado + "%";
+	        String filtroTratado = filtro == null ? "" : filtro.trim();
+	        String filtroLike = "%" + filtroTratado + "%";
 
-            ps.setString(1, filtroLike);
-            ps.setString(2, filtroLike);
-            ps.setInt(3, limit);
-            ps.setInt(4, offset);
+	        ps.setString(1, filtroLike);
+	        ps.setString(2, filtroLike);
+	        ps.setString(3, statusFiltro);
+	        ps.setString(4, statusFiltro);
+	        ps.setString(5, statusFiltro);
+	        ps.setInt(6, limit);
+	        ps.setInt(7, offset);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    veiculos.add(mapearVeiculo(rs));
-                }
-            }
+	        try (ResultSet rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                veiculos.add(mapearVeiculo(rs));
+	            }
+	        }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Erro ao buscar veículos com paginação.", e);
-        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new RuntimeException("Erro ao buscar veículos com paginação.", e);
+	    }
 
-        return veiculos;
-    }
+	    return veiculos;
+	}
 
-    public int contarTotal(String filtro) {
-        String sql = "SELECT COUNT(*) AS total FROM veiculo WHERE placa ILIKE ? OR rntrc ILIKE ?";
+	public int contarTotal(String filtro, String statusFiltro) {
+	    String sql = "SELECT COUNT(*) AS total " +
+	                 "FROM veiculo " +
+	                 "WHERE (placa ILIKE ? OR rntrc ILIKE ?) " +
+	                 "AND (? IS NULL OR ? = '' OR status = ?)";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+	    try (Connection conn = new ConnectionFactory().recuperarConexao();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            String filtroTratado = filtro == null ? "" : filtro.trim();
-            String filtroLike = "%" + filtroTratado + "%";
+	        String filtroTratado = filtro == null ? "" : filtro.trim();
+	        String filtroLike = "%" + filtroTratado + "%";
 
-            ps.setString(1, filtroLike);
-            ps.setString(2, filtroLike);
+	        ps.setString(1, filtroLike);
+	        ps.setString(2, filtroLike);
+	        ps.setString(3, statusFiltro);
+	        ps.setString(4, statusFiltro);
+	        ps.setString(5, statusFiltro);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("total");
-                }
-            }
+	        try (ResultSet rs = ps.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt("total");
+	            }
+	        }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Erro ao contar total de veículos.", e);
-        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new RuntimeException("Erro ao contar total de veículos.", e);
+	    }
 
-        return 0;
-    }
+	    return 0;
+	}
 
     public Veiculo buscarPorId(Integer id) {
         String sql = "SELECT id, placa, rntrc, ano_fabricacao, tipo, tara_kg, capacidade_kg, volume_m3, status " +
@@ -196,4 +206,20 @@ public class VeiculoDAO {
 
         return veiculo;
     }
+    
+    public void inativar(Integer id) {
+        String sql = "UPDATE veiculo SET status = 'INATIVO' WHERE id = ?";
+
+        try (Connection conn = new ConnectionFactory().recuperarConexao();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao inativar veículo.", e);
+        }
+    }
+    
 }
