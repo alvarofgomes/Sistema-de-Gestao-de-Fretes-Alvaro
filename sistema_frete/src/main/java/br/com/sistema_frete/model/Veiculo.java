@@ -7,12 +7,12 @@ public class Veiculo {
 
     private Integer id;
     private String placa;
-    private String rntrc;
+    private String rntrc;// Registro Nacional de Transportadores Rodoviários de Carga
     private Integer anoFabricacao;
     private TipoVeiculo tipo;
-    private BigDecimal taraKg;
+    private BigDecimal taraKg;// a tara do veículo em quilos: o peso do veículo vazio, sem carga.
     private BigDecimal capacidadeKg;
-    private BigDecimal volumeM3;
+    private BigDecimal volumeM3;//o volume em metros cúbicos, ou seja, quanto espaço de carga o veículo comporta.
     private StatusVeiculo status;
 
     public Veiculo() {
