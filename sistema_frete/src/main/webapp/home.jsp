@@ -13,51 +13,84 @@
         }
 
         .container {
-            width: 760px;
-            margin: 60px auto;
+            width: 900px;
+            margin: 50px auto;
             background: #ffffff;
             padding: 32px;
             border-radius: 10px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.12);
         }
 
+        .topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 16px;
+        }
+
         h1 {
-            margin-top: 0;
+            margin: 0;
             color: #222;
         }
 
-        .info {
-            background: #f8f9fa;
-            padding: 14px;
-            border-radius: 6px;
-            margin-bottom: 24px;
-            color: #333;
+        .usuario {
+            color: #555;
+            font-size: 14px;
         }
 
-        .menu {
+        .cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
+            gap: 18px;
             margin-top: 20px;
         }
 
-        .menu a {
+        .card {
             display: block;
-            text-align: center;
-            padding: 16px;
-            border-radius: 6px;
-            background: #0d6efd;
-            color: #fff;
+            padding: 22px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
             text-decoration: none;
-            font-weight: bold;
+            color: #222;
+            transition: 0.2s;
         }
 
-        .menu a:hover {
-            background: #0b5ed7;
+        .card:hover {
+            background: #e9f2ff;
+            border-color: #0d6efd;
+            transform: translateY(-2px);
+        }
+
+        .card h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            color: #0d6efd;
+        }
+
+        .card p {
+            margin: 0;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .card.desabilitado {
+            opacity: 0.55;
+            cursor: not-allowed;
+            background: #f1f1f1;
+        }
+
+        .card.desabilitado:hover {
+            transform: none;
+            border-color: #ddd;
+            background: #f1f1f1;
         }
 
         .sair {
-            margin-top: 22px;
+            margin-top: 28px;
             text-align: right;
         }
 
@@ -75,22 +108,52 @@
 <body>
 
 <div class="container">
-    <h1>Sistema de Gestão de Fretes</h1>
 
-    <div class="info">
-        <p>Login realizado com sucesso.</p>
-        <p>Usuário logado: <strong>${sessionScope.usuarioLogado}</strong></p>
+    <div class="topo">
+        <div>
+            <h1>Sistema de Gestão de Fretes</h1>
+            <p class="usuario">
+                Usuário logado: <strong>${sessionScope.usuarioLogado}</strong>
+            </p>
+        </div>
+
+        <div class="sair">
+            <a href="${pageContext.request.contextPath}/logout">Sair</a>
+        </div>
     </div>
 
-    <div class="menu">
-        <a href="${pageContext.request.contextPath}/clientes">Clientes</a>
-        <a href="${pageContext.request.contextPath}/motoristas">Motoristas</a>
-        <a href="${pageContext.request.contextPath}/veiculos">Veículos</a>
+    <div class="cards">
+        <a href="${pageContext.request.contextPath}/clientes" class="card">
+            <h2>Clientes</h2>
+            <p>Cadastro, edição, listagem e controle de clientes da transportadora.</p>
+        </a>
+
+        <a href="${pageContext.request.contextPath}/motoristas" class="card">
+            <h2>Motoristas</h2>
+            <p>Gerencie motoristas, CNH, vínculo e status operacional.</p>
+        </a>
+
+        <a href="${pageContext.request.contextPath}/veiculos" class="card">
+            <h2>Veículos</h2>
+            <p>Controle frota, capacidade, status e disponibilidade dos veículos.</p>
+        </a>
+
+        <a href="#" class="card desabilitado">
+            <h2>Fretes</h2>
+            <p>Módulo em desenvolvimento para emissão e acompanhamento de fretes.</p>
+        </a>
+
+        <a href="#" class="card desabilitado">
+            <h2>Ocorrências</h2>
+            <p>Registro futuro de eventos e ocorrências durante o transporte.</p>
+        </a>
+
+        <a href="#" class="card desabilitado">
+            <h2>Relatórios</h2>
+            <p>Área futura para relatórios operacionais com JasperReports.</p>
+        </a>
     </div>
 
-    <div class="sair">
-        <a href="${pageContext.request.contextPath}/logout">Sair do sistema</a>
-    </div>
 </div>
 
 </body>
