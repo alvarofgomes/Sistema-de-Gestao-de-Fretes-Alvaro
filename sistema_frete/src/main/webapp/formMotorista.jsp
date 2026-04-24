@@ -27,13 +27,30 @@
             box-sizing: border-box;
         }
 
-        button {
+        .acoes-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-salvar {
             padding: 10px;
             background: #0d6efd;
             color: white;
             border: none;
             cursor: pointer;
             width: 100%;
+        }
+
+        .btn-cancelar {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         .erro {
@@ -43,26 +60,34 @@
             margin-bottom: 15px;
             border-radius: 4px;
         }
-
-        .aviso {
-            background: #fff3cd;
-            color: #856404;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-
-        a {
-            display: inline-block;
-            margin-top: 10px;
-            text-decoration: none;
-        }
     </style>
+
+    <script>
+        function aplicarMascaraCPF(campo) {
+            let v = campo.value.replace(/\D/g, "");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            campo.value = v;
+        }
+
+        function aplicarMascaraTelefone(campo) {
+            let v = campo.value.replace(/\D/g, "");
+            if (v.length <= 10) {
+                v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+                v = v.replace(/(\d{4})(\d)/, "$1-$2");
+            } else {
+                v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+                v = v.replace(/(\d{5})(\d)/, "$1-$2");
+            }
+            campo.value = v;
+        }
+    </script>
 </head>
 <body>
 
 <div class="container">
-    <h2>Cadastro de Motorista</h2>
+    <h2>${motorista.id != null ? 'Editar Motorista' : 'Cadastro de Motorista'}</h2>
 
     <c:if test="${not empty erro}">
         <div class="erro">
@@ -70,27 +95,24 @@
         </div>
     </c:if>
 
-    <c:if test="${not empty motorista.cnhValidade && motorista.cnhValidade lt now}">
-        <div class="aviso">
-            ⚠ CNH vencida. Este motorista não poderá ser utilizado para novos fretes.
-        </div>
-    </c:if>
-
     <form action="${pageContext.request.contextPath}/motoristas" method="post">
 
         <input type="hidden" name="id" value="${motorista.id}" />
+        <input type="hidden" name="filtroRetorno" value="${param.filtro != null ? param.filtro : filtro}" />
+        <input type="hidden" name="paginaRetorno" value="${param.pagina != null ? param.pagina : paginaAtual}" />
+        <input type="hidden" name="registrosPorPaginaRetorno" value="${param.registrosPorPagina != null ? param.registrosPorPagina : registrosPorPagina}" />
 
         <label>Nome:</label>
         <input type="text" name="nome" value="${motorista.nome}" required />
 
         <label>CPF:</label>
-        <input type="text" name="cpf" value="${motorista.cpf}" required />
+        <input type="text" name="cpf" value="${motorista.cpf}" onkeyup="aplicarMascaraCPF(this)" maxlength="14" required />
 
         <label>Data de Nascimento:</label>
         <input type="date" name="dataNascimento" value="${motorista.dataNascimento}" />
 
         <label>Telefone:</label>
-        <input type="text" name="telefone" value="${motorista.telefone}" />
+        <input type="text" name="telefone" value="${motorista.telefone}" onkeyup="aplicarMascaraTelefone(this)" maxlength="15" />
 
         <label>Número da CNH:</label>
         <input type="text" name="cnhNumero" value="${motorista.cnhNumero}" />
@@ -123,10 +145,15 @@
             <option value="SUSPENSO" ${motorista.status == 'SUSPENSO' ? 'selected' : ''}>Suspenso</option>
         </select>
 
-        <button type="submit">Salvar</button>
-    </form>
+        <div class="acoes-form">
+            <button type="submit" class="btn-salvar">Salvar</button>
 
-    <a href="${pageContext.request.contextPath}/motoristas">← Voltar para listagem</a>
+            <a class="btn-cancelar"
+               href="${pageContext.request.contextPath}/motoristas?filtro=${param.filtro != null ? param.filtro : filtro}&pagina=${param.pagina != null ? param.pagina : paginaAtual}&registrosPorPagina=${param.registrosPorPagina != null ? param.registrosPorPagina : registrosPorPagina}">
+                Cancelar
+            </a>
+        </div>
+    </form>
 </div>
 
 </body>

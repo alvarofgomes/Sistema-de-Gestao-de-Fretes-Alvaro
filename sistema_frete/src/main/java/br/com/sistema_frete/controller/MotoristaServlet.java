@@ -7,6 +7,7 @@ import br.com.sistema_frete.enums.motorista.TipoVinculo;
 import br.com.sistema_frete.exception.CadastroException;
 import br.com.sistema_frete.exception.NegocioException;
 import br.com.sistema_frete.model.Motorista;
+import br.com.sistema_frete.DAO.MotoristaDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +23,7 @@ public class MotoristaServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private final MotoristaBO motoristaBO = new MotoristaBO();
+    private final MotoristaDAO motoristaDAO = new MotoristaDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,6 +39,11 @@ public class MotoristaServlet extends HttpServlet {
 
             if ("novo".equalsIgnoreCase(acao)) {
                 request.getRequestDispatcher("/formMotorista.jsp").forward(request, response);
+                return;
+            }
+            
+            if ("editar".equalsIgnoreCase(acao)) {
+                editar(request, response);
                 return;
             }
 
@@ -71,7 +78,19 @@ public class MotoristaServlet extends HttpServlet {
 
             motoristaBO.salvar(motorista);
 
-            response.sendRedirect(request.getContextPath() + "/motoristas");
+            String filtroRetorno = request.getParameter("filtroRetorno");
+            String paginaRetorno = request.getParameter("paginaRetorno");
+            String registrosPorPaginaRetorno = request.getParameter("registrosPorPaginaRetorno");
+
+            request.getSession().setAttribute("sucesso",
+                    motorista.getId() != null ? "Motorista atualizado com sucesso." : "Motorista cadastrado com sucesso.");
+
+            StringBuilder redirect = new StringBuilder(request.getContextPath() + "/motoristas");
+            redirect.append("?filtro=").append(filtroRetorno != null ? filtroRetorno : "");
+            redirect.append("&pagina=").append(paginaRetorno != null && !paginaRetorno.isEmpty() ? paginaRetorno : "1");
+            redirect.append("&registrosPorPagina=").append(registrosPorPaginaRetorno != null && !registrosPorPaginaRetorno.isEmpty() ? registrosPorPaginaRetorno : "10");
+
+            response.sendRedirect(redirect.toString());
 
         } catch (CadastroException e) {
             request.setAttribute("erro", e.getMessage());
@@ -127,6 +146,12 @@ public class MotoristaServlet extends HttpServlet {
         request.setAttribute("filtro", filtro);
         request.setAttribute("registrosPorPagina", registrosPorPagina);
 
+        String sucesso = (String) request.getSession().getAttribute("sucesso");
+        if (sucesso != null) {
+            request.setAttribute("sucesso", sucesso);
+            request.getSession().removeAttribute("sucesso");
+        }
+        
         request.getRequestDispatcher("/listaMotoristas.jsp").forward(request, response);
     }
 
@@ -140,7 +165,31 @@ public class MotoristaServlet extends HttpServlet {
         }
 
         motoristaBO.inativar(id);
+        request.getSession().setAttribute("sucesso", "Motorista inativado com sucesso.");
         response.sendRedirect(request.getContextPath() + "/motoristas");
+    }
+    
+    private void editar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, NegocioException {
+
+        Integer id = parseIntegerOrNull(request.getParameter("id"));
+
+        if (id == null) {
+            throw new NegocioException("ID do motorista não informado.");
+        }
+
+        Motorista motorista = motoristaDAO.buscarPorId(id);
+
+        if (motorista == null) {
+            throw new NegocioException("Motorista não encontrado.");
+        }
+
+        request.setAttribute("motorista", motorista);
+        request.setAttribute("filtro", request.getParameter("filtro"));
+        request.setAttribute("paginaAtual", request.getParameter("pagina"));
+        request.setAttribute("registrosPorPagina", request.getParameter("registrosPorPagina"));
+
+        request.getRequestDispatcher("/formMotorista.jsp").forward(request, response);
     }
 
     private void preencherMotoristaComParametros(HttpServletRequest request, Motorista motorista) {
