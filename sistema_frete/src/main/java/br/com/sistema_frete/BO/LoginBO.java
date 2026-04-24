@@ -1,24 +1,46 @@
 package br.com.sistema_frete.BO;
 
-import br.com.sistema_frete.exception.*;
+import br.com.sistema_frete.DAO.UsuarioDAO;
+import br.com.sistema_frete.enums.usuario.StatusUsuario;
+import br.com.sistema_frete.exception.CadastroException;
+import br.com.sistema_frete.exception.NegocioException;
+import br.com.sistema_frete.model.Usuario;
 
 public class LoginBO {
 
-    public void autenticar(String usuario, String senha) throws NegocioException {
-        if (usuario == null || usuario.trim().isEmpty()) {
-            throw new NegocioException("O usuario deve ser informado.");
-        }
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
-        if (senha == null || senha.trim().isEmpty()) {
-            throw new NegocioException("A senha deve ser informada.");
-        }
+    public Usuario autenticar(String login, String senha) throws NegocioException {
+        try {
+            if (login == null || login.trim().isEmpty()) {
+                throw new CadastroException("Informe o usuário.");
+            }
 
-        /*
-         * Semana 1:
-         * Autenticacao simples sem banco, apenas para validar o mecanismo de sessao e filtro.
-         */
-        if (!"admin".equals(usuario) || !"123".equals(senha)) {
-            throw new NegocioException("Usuario ou senha invalidos.");
+            if (senha == null || senha.trim().isEmpty()) {
+                throw new CadastroException("Informe a senha.");
+            }
+
+            Usuario usuario = usuarioDAO.buscarPorLogin(login);
+
+            if (usuario == null) {
+                throw new CadastroException("Usuário ou senha inválidos.");
+            }
+
+            if (!usuario.getSenha().equals(senha)) {
+                throw new CadastroException("Usuário ou senha inválidos.");
+            }
+
+            if (usuario.getStatus() != StatusUsuario.ATIVO) {
+                throw new CadastroException("Usuário inativo. Entre em contato com o administrador.");
+            }
+
+            return usuario;
+
+        } catch (CadastroException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NegocioException("Não foi possível realizar o login.", e);
         }
     }
 }

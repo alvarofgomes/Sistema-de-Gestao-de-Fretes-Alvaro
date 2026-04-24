@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -52,14 +54,10 @@
             border-radius: 4px;
             margin-top: 12px;
         }
-        .info {
-            margin-top: 14px;
-            font-size: 13px;
-            color: #555;
-        }
     </style>
 </head>
 <body>
+
 <div class="container">
     <h1>Login</h1>
 
@@ -73,14 +71,12 @@
         <button type="submit">Entrar</button>
     </form>
 
-    <div class="erro">
-        ${mensagemErro}
-    </div>
-
-    <div class="info">
-        Usuário de teste: <strong>admin</strong><br>
-        Senha de teste: <strong>123</strong>
-    </div>
+    <c:if test="${not empty mensagemErro}">
+        <div class="erro">
+            ${mensagemErro}
+        </div>
+    </c:if>
 </div>
+
 </body>
 </html>
