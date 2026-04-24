@@ -12,18 +12,37 @@
             margin: 30px;
         }
 
-        .topo {
-            margin-bottom: 20px;
+        .topo-botoes {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-novo,
+        .btn-voltar {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
         }
 
         .btn-novo {
-            display: inline-block;
-            padding: 10px 14px;
             background: #198754;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-bottom: 15px;
+        }
+
+        .btn-novo:hover {
+            background: #157347;
+        }
+
+        .btn-voltar {
+            background: #6c757d;
+        }
+
+        .btn-voltar:hover {
+            background: #5a6268;
         }
 
         .msg-sucesso {
@@ -100,7 +119,11 @@
 </head>
 <body>
 
-<div class="topo">
+<div class="topo-botoes">
+    <a href="${pageContext.request.contextPath}/home.jsp" class="btn-voltar">
+        Voltar
+    </a>
+
     <a href="${pageContext.request.contextPath}/motoristas?acao=novo&filtro=${filtro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}" class="btn-novo">
         Novo Motorista
     </a>

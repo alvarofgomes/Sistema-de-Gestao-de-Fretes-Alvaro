@@ -9,14 +9,37 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; }
 
-        .btn-novo {
+        .topo-botoes {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-novo,
+        .btn-voltar {
             display: inline-block;
             padding: 10px 14px;
-            background: #198754;
-            color: white;
-            text-decoration: none;
             border-radius: 4px;
-            margin-bottom: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .btn-novo {
+            background: #198754;
+        }
+
+        .btn-novo:hover {
+            background: #157347;
+        }
+
+        .btn-voltar {
+            background: #6c757d;
+        }
+
+        .btn-voltar:hover {
+            background: #5a6268;
         }
 
         .msg-sucesso {
@@ -101,9 +124,15 @@
 </head>
 <body>
 
-<a href="${pageContext.request.contextPath}/veiculos?acao=novo&filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}" class="btn-novo">
-    Novo Veículo
-</a>
+<div class="topo-botoes">
+    <a href="${pageContext.request.contextPath}/home.jsp" class="btn-voltar">
+         Voltar
+    </a>
+
+    <a href="${pageContext.request.contextPath}/veiculos?acao=novo&filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}" class="btn-novo">
+        Novo Veículo
+    </a>
+</div>
 
 <c:if test="${not empty sucesso}">
     <div class="msg-sucesso">${sucesso}</div>
