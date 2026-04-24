@@ -26,6 +26,14 @@
             margin-bottom: 15px;
         }
 
+        .msg-sucesso {
+            background: #d1e7dd;
+            color: #0f5132;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
         .filtro-form {
             margin-bottom: 20px;
         }
@@ -57,9 +65,17 @@
         }
 
         .acoes a {
-            color: #c0392b;
             text-decoration: none;
             font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .link-editar {
+            color: #0d6efd;
+        }
+
+        .link-inativar {
+            color: #c0392b;
         }
 
         .status-inativo {
@@ -85,10 +101,14 @@
 <body>
 
 <div class="topo">
-    <a href="${pageContext.request.contextPath}/motoristas?acao=novo" class="btn-novo">
-       	Novo Motorista
+    <a href="${pageContext.request.contextPath}/motoristas?acao=novo&filtro=${filtro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}" class="btn-novo">
+        Novo Motorista
     </a>
 </div>
+
+<c:if test="${not empty sucesso}">
+    <div class="msg-sucesso">${sucesso}</div>
+</c:if>
 
 <form action="${pageContext.request.contextPath}/motoristas" method="get" class="filtro-form">
     <label for="filtro">Nome:</label>
@@ -136,15 +156,25 @@
                                 <c:when test="${motorista.status == 'INATIVO'}">
                                     <span style="color:gray;">INATIVO</span>
                                 </c:when>
+                                <c:when test="${motorista.status == 'SUSPENSO'}">
+                                    <span style="color:#b58100; font-weight:bold;">SUSPENSO</span>
+                                </c:when>
                                 <c:otherwise>
                                     ${motorista.status}
                                 </c:otherwise>
                             </c:choose>
                         </td>
                         <td class="acoes">
+                            <a class="link-editar"
+                               href="${pageContext.request.contextPath}/motoristas?acao=editar&id=${motorista.id}&filtro=${filtro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}">
+                                Editar
+                            </a>
+
                             <c:choose>
                                 <c:when test="${motorista.status != 'INATIVO'}">
-                                    <a href="${pageContext.request.contextPath}/motoristas?acao=inativar&id=${motorista.id}"
+                                    |
+                                    <a class="link-inativar"
+                                       href="${pageContext.request.contextPath}/motoristas?acao=inativar&id=${motorista.id}"
                                        onclick="return confirm('Tem certeza que deseja inativar este motorista?');">
                                         Inativar
                                     </a>
