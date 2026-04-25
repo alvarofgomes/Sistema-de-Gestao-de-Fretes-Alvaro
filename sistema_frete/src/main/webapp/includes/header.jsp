@@ -1,4 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <style>
     .app-header {
@@ -37,9 +38,18 @@
     </a>
 
     <nav class="app-nav">
-        <a href="${pageContext.request.contextPath}/clientes">Clientes</a>
-        <a href="${pageContext.request.contextPath}/motoristas">Motoristas</a>
-        <a href="${pageContext.request.contextPath}/veiculos">Veículos</a>
+        <c:if test="${requestScope.paginaAtualMenu ne 'clientes'}">
+            <a href="${pageContext.request.contextPath}/clientes">Clientes</a>
+        </c:if>
+
+        <c:if test="${requestScope.paginaAtualMenu ne 'motoristas'}">
+            <a href="${pageContext.request.contextPath}/motoristas">Motoristas</a>
+        </c:if>
+
+        <c:if test="${requestScope.paginaAtualMenu ne 'veiculos'}">
+            <a href="${pageContext.request.contextPath}/veiculos">Veículos</a>
+        </c:if>
+
         <a href="${pageContext.request.contextPath}/logout" class="sair">Sair</a>
     </nav>
 </header>
