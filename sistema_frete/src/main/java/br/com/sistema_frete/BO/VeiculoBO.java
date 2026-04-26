@@ -64,6 +64,30 @@ public class VeiculoBO {
             throw new NegocioException("Não foi possível salvar o veículo.", e);
         }
     }
+    
+    public Veiculo buscarPorId(Integer id) throws NegocioException {
+        try {
+
+            if(id == null){
+                throw new CadastroException("ID do veículo não informado.");
+            }
+
+            Veiculo veiculo = veiculoDAO.buscarPorId(id);
+
+            if(veiculo == null){
+                throw new CadastroException("Veículo não encontrado.");
+            }
+
+            return veiculo;
+
+        } catch (CadastroException e){
+            throw e;
+        } catch(Exception e){
+            throw new NegocioException(
+               "Não foi possível buscar o veículo.", e
+            );
+        }
+    }
 
     private void validarCamposObrigatorios(Veiculo veiculo) throws CadastroException {
         if (veiculo == null) {
