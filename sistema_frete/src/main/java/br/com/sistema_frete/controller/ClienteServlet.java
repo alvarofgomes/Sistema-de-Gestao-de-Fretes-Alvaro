@@ -1,7 +1,6 @@
 package br.com.sistema_frete.controller;
 
 import br.com.sistema_frete.BO.ClienteBO;
-import br.com.sistema_frete.DAO.ClienteDAO;
 import br.com.sistema_frete.enums.cliente.StatusCliente;
 import br.com.sistema_frete.enums.cliente.TipoCliente;
 import br.com.sistema_frete.exception.CadastroException;
@@ -21,7 +20,6 @@ public class ClienteServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private final ClienteBO clienteBO = new ClienteBO();
-    private final ClienteDAO clienteDAO = new ClienteDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -162,11 +160,7 @@ public class ClienteServlet extends HttpServlet {
             throw new NegocioException("ID do cliente não informado.");
         }
 
-        Cliente cliente = clienteDAO.buscarPorId(id);
-
-        if (cliente == null) {
-            throw new NegocioException("Cliente não encontrado.");
-        }
+        Cliente cliente = clienteBO.buscarPorId(id);
 
         request.setAttribute("cliente", cliente);
         

@@ -36,6 +36,29 @@ public class ClienteBO {
             throw new NegocioException("Não foi possível obter o total de clientes.", e);
         }
     }
+    
+    public Cliente buscarPorId(Integer id) throws NegocioException {
+        try {
+            if (id == null) {
+                throw new CadastroException("ID do cliente não informado.");
+            }
+
+            Cliente cliente = clienteDAO.buscarPorId(id);
+
+            if (cliente == null) {
+                throw new CadastroException("Cliente não encontrado.");
+            }
+
+            return cliente;
+
+        } catch (CadastroException e) {
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar cliente por ID:");
+            e.printStackTrace();
+            throw new NegocioException("Não foi possível buscar o cliente.", e);
+        }
+    }
 
     public void salvar(Cliente cliente) throws NegocioException {
         try {
