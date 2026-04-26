@@ -7,7 +7,6 @@ import br.com.sistema_frete.enums.motorista.TipoVinculo;
 import br.com.sistema_frete.exception.CadastroException;
 import br.com.sistema_frete.exception.NegocioException;
 import br.com.sistema_frete.model.Motorista;
-import br.com.sistema_frete.DAO.MotoristaDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +22,6 @@ public class MotoristaServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private final MotoristaBO motoristaBO = new MotoristaBO();
-    private final MotoristaDAO motoristaDAO = new MotoristaDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -178,11 +176,7 @@ public class MotoristaServlet extends HttpServlet {
             throw new NegocioException("ID do motorista não informado.");
         }
 
-        Motorista motorista = motoristaDAO.buscarPorId(id);
-
-        if (motorista == null) {
-            throw new NegocioException("Motorista não encontrado.");
-        }
+        Motorista motorista = motoristaBO.buscarPorId(id);
 
         request.setAttribute("motorista", motorista);
         request.setAttribute("filtro", request.getParameter("filtro"));

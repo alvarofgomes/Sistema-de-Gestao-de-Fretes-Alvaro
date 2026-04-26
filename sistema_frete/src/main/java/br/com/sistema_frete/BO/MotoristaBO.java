@@ -58,6 +58,29 @@ public class MotoristaBO {
         }
     }
 
+    public Motorista buscarPorId(Integer id) throws NegocioException {
+        try {
+            if (id == null) {
+                throw new CadastroException("ID do motorista não informado.");
+            }
+
+            Motorista motorista = motoristaDAO.buscarPorId(id);
+
+            if (motorista == null) {
+                throw new CadastroException("Motorista não encontrado.");
+            }
+
+            return motorista;
+
+        } catch (CadastroException e) {
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar motorista por ID:");
+            e.printStackTrace();
+            throw new NegocioException("Não foi possível buscar o motorista.", e);
+        }
+    }
+    
     public boolean isMotoristaAptoParaFrete(Motorista motorista) {
         if (motorista == null) {
             return false;
