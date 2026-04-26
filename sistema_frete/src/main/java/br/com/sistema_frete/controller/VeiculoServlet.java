@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.sistema_frete.BO.VeiculoBO;
-import br.com.sistema_frete.DAO.VeiculoDAO;
 import br.com.sistema_frete.enums.veiculo.StatusVeiculo;
 import br.com.sistema_frete.enums.veiculo.TipoVeiculo;
 import br.com.sistema_frete.exception.CadastroException;
@@ -24,7 +23,6 @@ public class VeiculoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final VeiculoBO veiculoBO = new VeiculoBO();
-    private final VeiculoDAO veiculoDAO = new VeiculoDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -165,11 +163,7 @@ public class VeiculoServlet extends HttpServlet {
             throw new NegocioException("ID do veículo não informado.");
         }
 
-        Veiculo veiculo = veiculoDAO.buscarPorId(id);
-
-        if (veiculo == null) {
-            throw new NegocioException("Veículo não encontrado.");
-        }
+        Veiculo veiculo = veiculoBO.buscarPorId(id);
 
         request.setAttribute("veiculo", veiculo);
         request.setAttribute("filtro", request.getParameter("filtro"));
