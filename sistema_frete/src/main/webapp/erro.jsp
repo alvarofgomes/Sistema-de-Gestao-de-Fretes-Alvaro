@@ -42,7 +42,9 @@
         ${mensagemErro != null ? mensagemErro : 'Não foi possível concluir a operação no momento.'}
     </p>
     <p>Tente novamente mais tarde ou entre em contato com o suporte.</p>
-    <a href="${pageContext.request.contextPath}/login">Voltar para o login</a>
+    <a href="${not empty voltarUrl ? voltarUrl : pageContext.request.contextPath.concat('/home.jsp')}">
+    Voltar
+</a>
 </div>
 </body>
 </html>

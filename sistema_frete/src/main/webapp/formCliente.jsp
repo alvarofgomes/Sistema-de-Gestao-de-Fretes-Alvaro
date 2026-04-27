@@ -120,14 +120,6 @@
         <label>Inscrição Estadual:</label>
         <input type="text" name="inscricaoEstadual" value="${cliente.inscricaoEstadual}" />
 
-        <label>Tipo:</label>
-        <select name="tipo">
-            <option value="">Selecione</option>
-            <option value="REMETENTE" ${cliente.tipo == 'REMETENTE' ? 'selected' : ''}>Remetente</option>
-            <option value="DESTINATARIO" ${cliente.tipo == 'DESTINATARIO' ? 'selected' : ''}>Destinatário</option>
-            <option value="AMBOS" ${cliente.tipo == 'AMBOS' ? 'selected' : ''}>Ambos</option>
-        </select>
-
         <label>Logradouro:</label>
         <input type="text" name="logradouro" value="${cliente.logradouro}" />
 

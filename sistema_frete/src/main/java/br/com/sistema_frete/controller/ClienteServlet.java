@@ -201,11 +201,6 @@ public class ClienteServlet extends HttpServlet {
         cliente.setTelefone(request.getParameter("telefone"));
         cliente.setEmail(request.getParameter("email"));
 
-        String tipo = request.getParameter("tipo");
-        if (tipo != null && !tipo.trim().isEmpty()) {
-            cliente.setTipo(TipoCliente.valueOf(tipo));
-        }
-
         String status = request.getParameter("status");
         if (status != null && !status.trim().isEmpty()) {
             cliente.setStatus(StatusCliente.valueOf(status));
