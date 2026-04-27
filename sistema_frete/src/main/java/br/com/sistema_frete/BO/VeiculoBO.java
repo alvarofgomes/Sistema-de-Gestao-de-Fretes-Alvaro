@@ -98,9 +98,10 @@ public class VeiculoBO {
             throw new CadastroException("A placa é obrigatória.");
         }
 
-        if (!veiculo.getPlaca().matches("^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$")) {
-            throw new CadastroException("A placa informada é inválida.");
-        }
+        if (!veiculo.getPlaca().matches("^[A-Z]{3}[0-9]{4}$") &&
+        	    !veiculo.getPlaca().matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+        	    throw new CadastroException("A placa informada é inválida.");
+        	}
 
         if (veiculo.getRntrc() == null || veiculo.getRntrc().trim().isEmpty()) {
             throw new CadastroException("O RNTRC é obrigatório.");
