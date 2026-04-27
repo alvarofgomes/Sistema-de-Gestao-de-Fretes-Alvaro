@@ -20,7 +20,7 @@ public class MotoristaDAO {
                      "cnh_categoria, cnh_validade, tipo_vinculo, status " +
                      "FROM motorista WHERE id = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -44,7 +44,7 @@ public class MotoristaDAO {
                      "cnh_categoria, cnh_validade, tipo_vinculo, status " +
                      "FROM motorista WHERE cpf = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, cpf);
@@ -72,7 +72,7 @@ public class MotoristaDAO {
                      "ORDER BY nome ASC " +
                      "LIMIT ? OFFSET ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String filtroTratado = (filtro == null) ? "" : filtro.trim();
@@ -99,7 +99,7 @@ public class MotoristaDAO {
     public int contarTotal(String filtro) {
         String sql = "SELECT COUNT(*) AS total FROM motorista WHERE nome ILIKE ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String filtroTratado = (filtro == null) ? "" : filtro.trim();
@@ -134,7 +134,7 @@ public class MotoristaDAO {
                      "(nome, cpf, data_nascimento, telefone, cnh_numero, cnh_categoria, cnh_validade, tipo_vinculo, status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             preencherPreparedStatement(motorista, ps);
@@ -152,7 +152,7 @@ public class MotoristaDAO {
                      "cnh_categoria = ?, cnh_validade = ?, tipo_vinculo = ?, status = ? " +
                      "WHERE id = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             preencherPreparedStatement(motorista, ps);
@@ -221,7 +221,7 @@ public class MotoristaDAO {
     public void inativar(Long id) {
         String sql = "UPDATE motorista SET status = 'INATIVO' WHERE id = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, id);

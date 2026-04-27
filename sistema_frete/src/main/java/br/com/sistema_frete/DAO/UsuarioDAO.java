@@ -15,7 +15,7 @@ public class UsuarioDAO {
                      "FROM usuario " +
                      "WHERE login = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, login);
