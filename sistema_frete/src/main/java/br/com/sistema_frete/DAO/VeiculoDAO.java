@@ -23,7 +23,7 @@ public class VeiculoDAO {
 	                 "ORDER BY placa ASC " +
 	                 "LIMIT ? OFFSET ?";
 
-	    try (Connection conn = new ConnectionFactory().recuperarConexao();
+	    try (Connection conn = ConnectionFactory.getConnection();
 	         PreparedStatement ps = conn.prepareStatement(sql)) {
 
 	        String filtroTratado = filtro == null ? "" : filtro.trim();
@@ -57,7 +57,7 @@ public class VeiculoDAO {
 	                 "WHERE (placa ILIKE ? OR rntrc ILIKE ?) " +
 	                 "AND (? IS NULL OR ? = '' OR status = ?)";
 
-	    try (Connection conn = new ConnectionFactory().recuperarConexao();
+	    try (Connection conn = ConnectionFactory.getConnection();
 	         PreparedStatement ps = conn.prepareStatement(sql)) {
 
 	        String filtroTratado = filtro == null ? "" : filtro.trim();
@@ -87,7 +87,7 @@ public class VeiculoDAO {
         String sql = "SELECT id, placa, rntrc, ano_fabricacao, tipo, tara_kg, capacidade_kg, volume_m3, status " +
                      "FROM veiculo WHERE id = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -110,7 +110,7 @@ public class VeiculoDAO {
         String sql = "SELECT id, placa, rntrc, ano_fabricacao, tipo, tara_kg, capacidade_kg, volume_m3, status " +
                      "FROM veiculo WHERE placa = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, placa);
@@ -142,7 +142,7 @@ public class VeiculoDAO {
                      "(placa, rntrc, ano_fabricacao, tipo, tara_kg, capacidade_kg, volume_m3, status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             preencherPreparedStatement(veiculo, ps);
@@ -159,7 +159,7 @@ public class VeiculoDAO {
                      "placa = ?, rntrc = ?, ano_fabricacao = ?, tipo = ?, tara_kg = ?, capacidade_kg = ?, volume_m3 = ?, status = ? " +
                      "WHERE id = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             preencherPreparedStatement(veiculo, ps);
@@ -210,7 +210,7 @@ public class VeiculoDAO {
     public void inativar(Integer id) {
         String sql = "UPDATE veiculo SET status = 'INATIVO' WHERE id = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, id);

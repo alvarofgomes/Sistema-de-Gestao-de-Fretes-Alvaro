@@ -13,7 +13,7 @@ public class FreteDAO {
                      "FROM frete " +
                      "WHERE id_remetente = ? OR id_destinatario = ?";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, idCliente);
@@ -40,7 +40,7 @@ public class FreteDAO {
                      "AND status IN ('EMITIDO', 'SAIDA_CONFIRMADA', 'EM_TRANSITO') " +
                      "LIMIT 1";
 
-        try (Connection conn = new ConnectionFactory().recuperarConexao();
+        try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setLong(1, idMotorista);
