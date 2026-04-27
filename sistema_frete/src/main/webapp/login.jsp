@@ -8,96 +8,195 @@
 <title>Login - Sistema de Gestão de Fretes</title>
 
 <style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+
+    background-image:
+        linear-gradient(
+            rgba(6, 20, 50, .08),
+            rgba(6, 20, 50, .18)
+        ),
+        url('${pageContext.request.contextPath}/assets/images/OptimusPrimeNoPrime.png');
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    padding-right: 8%;
+}
+
+.login-box {
+    width: 400px;
+    background: rgba(255, 255, 255, 0.96);
+    padding: 40px 36px 36px;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+}
+
+.logo-icon {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-text span.top {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.logo-text span.bottom {
+    font-size: 22px;
+    font-weight: 900;
+    color: #1a2a4a;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.field-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #1a2a4a;
+}
+
+.field-label svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 44px 12px 14px;
+    border: 1.5px solid #d0d5e0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #1a4fa8;
+}
+
+.toggle-pwd {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #aaa;
+    width: auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-pwd:hover {
+    color: #555;
+    background: none;
+}
+
+button[type="submit"] {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #1a4fa8;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+    background: #163d85;
+}
+
+button[type="submit"] svg {
+    width: 18px;
+    height: 18px;
+}
+
+.erro {
+    margin-top: 16px;
+    background: #fde8e8;
+    color: #8b1a1a;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
     body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f8;
-        margin: 0;
-        padding: 0;
+        justify-content: center;
+        padding-right: 0;
+        padding: 20px;
     }
 
     .login-box {
-        width: 420px;
-        margin: 80px auto;
-        background: #ffffff;
-        padding: 32px;
-        border-radius: 10px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-    }
-
-    .logo {
-        text-align: center;
-        margin-bottom: 26px;
-    }
-
-    .logo h1 {
-        margin: 0;
-        color: #222;
-        font-size: 28px;
-    }
-
-    .logo p {
-        margin-top: 8px;
-        color: #555;
-        font-size: 14px;
-    }
-
-    .form-group {
-        margin-bottom: 18px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: bold;
-        color: #222;
-    }
-
-    input {
         width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 15px;
+        max-width: 400px;
     }
-
-    input:focus {
-        outline: none;
-        border-color: #0d6efd;
-    }
-
-    button {
-        width: 100%;
-        margin-top: 10px;
-        padding: 12px;
-        border: none;
-        border-radius: 6px;
-        background: #0d6efd;
-        color: #ffffff;
-        font-size: 15px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #0b5ed7;
-    }
-
-    .erro {
-        margin-top: 15px;
-        background: #f8d7da;
-        color: #842029;
-        padding: 10px;
-        border-radius: 4px;
-        text-align: center;
-    }
-
-    .subtitulo {
-        margin-top: 18px;
-        text-align: center;
-        color: #555;
-        font-size: 13px;
-    }
+}
 </style>
 </head>
 
@@ -106,49 +205,86 @@
 <div class="login-box">
 
     <div class="logo">
-        <h1>Sistema de Gestão de Fretes</h1>
-        <p>Acesso ao sistema</p>
+        <svg class="logo-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="22" width="34" height="22" rx="3" fill="#1a4fa8"/>
+            <path d="M38 28 L38 44 L58 44 L58 34 L50 28 Z" fill="#1a4fa8"/>
+            <path d="M42 30 L42 36 L54 36 L54 34 L48 30 Z" fill="#7eb3f5"/>
+            <circle cx="14" cy="46" r="6" fill="#1a2a4a"/>
+            <circle cx="14" cy="46" r="3" fill="#d0d5e0"/>
+            <circle cx="46" cy="46" r="6" fill="#1a2a4a"/>
+            <circle cx="46" cy="46" r="3" fill="#d0d5e0"/>
+            <path d="M8 22 Q12 16 16 22 Q20 16 24 22" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M20 22 Q24 15 28 22 Q32 15 36 22" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+
+        <div class="logo-text">
+            <span class="top">Sistema de</span>
+            <span class="bottom">Gestão de<br>Fretes</span>
+        </div>
     </div>
 
     <form action="${pageContext.request.contextPath}/login" method="post">
 
         <div class="form-group">
-            <label>Usuário</label>
-            <input
-                type="text"
-                name="usuario"
-                maxlength="50"
-                placeholder="Digite seu usuário"
-                required>
+            <div class="field-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1a4fa8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                Usuário
+            </div>
+
+            <input type="text" name="usuario" maxlength="50" placeholder="Digite seu usuário" required>
         </div>
 
         <div class="form-group">
-            <label>Senha</label>
-            <input
-                type="password"
-                name="senha"
-                maxlength="50"
-                placeholder="Digite sua senha"
-                required>
+            <div class="field-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1a4fa8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Senha
+            </div>
+
+            <div class="input-wrapper">
+                <input type="password" name="senha" maxlength="50" placeholder="Digite sua senha" id="senhaInput" required>
+
+                <button type="button" class="toggle-pwd" onclick="toggleSenha()" title="Mostrar/ocultar senha">
+                    <svg id="eyeIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <button type="submit">
             Entrar
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+            </svg>
         </button>
 
     </form>
 
     <c:if test="${not empty mensagemErro}">
-        <div class="erro">
-            ${mensagemErro}
-        </div>
+        <div class="erro">${mensagemErro}</div>
     </c:if>
-
-    <div class="subtitulo">
-        Sistema de Gestão de Fretes
-    </div>
 
 </div>
 
+<script>
+function toggleSenha() {
+    var input = document.getElementById("senhaInput");
+
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+}
+</script>
+
 </body>
-</html>	
+</html>
