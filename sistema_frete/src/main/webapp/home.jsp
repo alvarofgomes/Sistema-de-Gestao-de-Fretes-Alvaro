@@ -7,6 +7,27 @@
     <title>Home - Sistema de Gestão de Fretes</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+
+    <style>
+        body {
+            background:
+                linear-gradient(
+                    rgba(6, 20, 50, .10),
+                    rgba(6, 20, 50, .22)
+                ),
+                url('${pageContext.request.contextPath}/assets/images/OptimusPrimeNoPrime.png');
+
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .container-home {
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(8px);
+        }
+    </style>
 </head>
 
 <body>
