@@ -14,6 +14,16 @@ public class ClienteBO {
     private final ClienteDAO clienteDAO = new ClienteDAO();
     private final FreteDAO freteDAO = new FreteDAO();
 
+    public List<Cliente> listarTodos() throws NegocioException {
+        try {
+            return clienteDAO.buscarTodos();
+        } catch (Exception e) {
+            System.err.println("Erro ao listar todos os clientes:");
+            e.printStackTrace();
+            throw new NegocioException("Não foi possível listar os clientes.", e);
+        }
+    }
+    
     public List<Cliente> listarComPaginacao(String filtro, int pagina, int registrosPorPagina) throws NegocioException {
         try {
             int offset = (pagina - 1) * registrosPorPagina;
