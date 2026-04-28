@@ -50,6 +50,21 @@ public class VeiculoDAO {
 
 	    return veiculos;
 	}
+	
+	public List<Veiculo> buscarDisponiveis() {
+	    List<Veiculo> lista = new ArrayList<>();
+	    String sql = "SELECT id, placa, tipo, capacidade_kg, tara_kg, volume_m3, rntrc, ano_fabricacao, status " +
+	                 "FROM veiculo WHERE status = 'DISPONIVEL' ORDER BY placa ASC";
+	    try (Connection conn = ConnectionFactory.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql);
+	         ResultSet rs = ps.executeQuery()) {
+	        while (rs.next()) lista.add(mapearVeiculo(rs));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new RuntimeException("Erro ao buscar veículos disponíveis.", e);
+	    }
+	    return lista;
+	}
 
 	public int contarTotal(String filtro, String statusFiltro) {
 	    String sql = "SELECT COUNT(*) AS total " +

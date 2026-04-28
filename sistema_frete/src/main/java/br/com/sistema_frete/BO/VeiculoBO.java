@@ -13,6 +13,16 @@ public class VeiculoBO {
 
     private final VeiculoDAO veiculoDAO = new VeiculoDAO();
 
+    public List<Veiculo> listarDisponiveis() throws NegocioException {
+        try {
+            return veiculoDAO.buscarDisponiveis();
+        } catch (Exception e) {
+            System.err.println("Erro ao listar veículos disponíveis:");
+            e.printStackTrace();
+            throw new NegocioException("Não foi possível listar os veículos.", e);
+        }
+    }
+    
     public List<Veiculo> listarComPaginacao(String filtro, String statusFiltro, int pagina, int registrosPorPagina) throws NegocioException {
         try {
             int offset = (pagina - 1) * registrosPorPagina;
