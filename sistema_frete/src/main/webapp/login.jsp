@@ -6,198 +6,165 @@
 <head>
 <meta charset="UTF-8">
 <title>Login - Sistema de Gestão de Fretes</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+        <style>
+        body {
+            background:
+                linear-gradient(
+                    rgba(6, 20, 50, .10),
+                    rgba(6, 20, 50, .22)
+                ),
+                url('${pageContext.request.contextPath}/assets/images/OptimusPrimeNoPrime.png');
 
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
 
-html,
+        .container-home {
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(8px);
+        }
+        
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    width: 100%;
-    height: 100%;
-}
-
-body {
-    font-family: Arial, sans-serif;
-
-    background-image:
-        linear-gradient(
-            rgba(6, 20, 50, .08),
-            rgba(6, 20, 50, .18)
-        ),
-        url('${pageContext.request.contextPath}/assets/images/OptimusPrimeNoPrime.png');
-
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-
+    font-family: 'Barlow', sans-serif; /* ou qualquer fonte que estiver usando */
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-
-    padding-right: 8%;
+    justify-content: center;
 }
 
 .login-box {
-    width: 400px;
-    background: rgba(255, 255, 255, 0.96);
-    padding: 40px 36px 36px;
-    border-radius: 14px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 44px 48px 40px;
+    width: 420px;
+    max-width: 95vw;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
+
 
 .logo {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 32px;
+    margin-bottom: 36px;
 }
 
 .logo-icon {
     width: 64px;
     height: 64px;
-    flex-shrink: 0;
+    flex-shrink: 0;   /* <-- ESSENCIAL: impede o SVG de crescer */
 }
 
 .logo-text {
     display: flex;
     flex-direction: column;
+    line-height: 1.1;
 }
 
-.logo-text span.top {
+.logo-text .top {
     font-size: 13px;
     font-weight: 600;
-    color: #888;
-    letter-spacing: 1px;
+    color: #1a4fa8;
     text-transform: uppercase;
-}
-
-.logo-text span.bottom {
-    font-size: 22px;
-    font-weight: 900;
-    color: #1a2a4a;
     letter-spacing: 0.5px;
-    line-height: 1.1;
+}
+
+.logo-text .bottom {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a2a4a;
     text-transform: uppercase;
 }
 
-.form-group {
-    margin-bottom: 20px;
-}
+.form-group { margin-bottom: 20px; }
 
 .field-label {
     display: flex;
     align-items: center;
     gap: 7px;
-    margin-bottom: 8px;
-    font-weight: 700;
     font-size: 14px;
+    font-weight: 600;
     color: #1a2a4a;
+    margin-bottom: 8px;
 }
 
-.field-label svg {
-    width: 15px;
-    height: 15px;
-    flex-shrink: 0;
-}
-
-.input-wrapper {
-    position: relative;
-}
+.field-label svg { width: 17px; height: 17px; }
 
 input[type="text"],
 input[type="password"] {
     width: 100%;
-    padding: 12px 44px 12px 14px;
-    border: 1.5px solid #d0d5e0;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
+    padding: 13px 16px;
+    border: 1.5px solid #dde3ef;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #1a2a4a;
     background: #fff;
-    transition: border-color 0.2s;
+    outline: none;
+    transition: border-color .2s;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
-    outline: none;
-    border-color: #1a4fa8;
-}
+input:focus { border-color: #1a4fa8; }
+
+.input-wrapper { position: relative; }
+.input-wrapper input { padding-right: 46px; }
 
 .toggle-pwd {
     position: absolute;
-    right: 12px;
+    right: 13px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0;
-    color: #aaa;
-    width: auto;
-    margin: 0;
+    color: #8899bb;
     display: flex;
     align-items: center;
-}
-
-.toggle-pwd:hover {
-    color: #555;
-    background: none;
+    padding: 0;
 }
 
 button[type="submit"] {
     width: 100%;
-    margin-top: 8px;
-    padding: 13px 20px;
-    border: none;
-    border-radius: 8px;
+    margin-top: 10px;
+    padding: 15px 20px;
     background: #1a4fa8;
     color: #fff;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
+    border: none;
+    border-radius: 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    letter-spacing: 0.5px;
-    transition: background 0.2s;
+    transition: background .2s, transform .1s;
 }
 
 button[type="submit"]:hover {
-    background: #163d85;
+    background: #153e8a;
+    transform: translateY(-1px);
 }
 
-button[type="submit"] svg {
-    width: 18px;
-    height: 18px;
-}
+button[type="submit"] svg { width: 20px; height: 20px; }
+
 
 .erro {
     margin-top: 16px;
-    background: #fde8e8;
-    color: #8b1a1a;
+    background: #fff0f0;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
+    border-radius: 8px;
     padding: 10px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
 }
-
-@media (max-width: 900px) {
-    body {
-        justify-content: center;
-        padding-right: 0;
-        padding: 20px;
-    }
-
-    .login-box {
-        width: 100%;
-        max-width: 400px;
-    }
-}
-</style>
+    </style>
 </head>
 
 <body>
