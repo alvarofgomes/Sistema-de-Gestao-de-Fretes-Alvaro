@@ -62,6 +62,21 @@ public class MotoristaDAO {
 
         return null;
     }
+    
+    public List<Motorista> buscarAtivos() {
+        List<Motorista> lista = new ArrayList<>();
+        String sql = "SELECT id, nome, cpf, cnh_numero, cnh_categoria, cnh_validade, tipo_vinculo, status " +
+                     "FROM motorista WHERE status = 'ATIVO' ORDER BY nome ASC";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) lista.add(mapearMotorista(rs));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar motoristas ativos.", e);
+        }
+        return lista;
+    }
 
     public List<Motorista> buscarComPaginacao(String filtro, int offset, int limit) {
         List<Motorista> motoristas = new ArrayList<Motorista>();

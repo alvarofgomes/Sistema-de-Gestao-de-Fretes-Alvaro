@@ -97,6 +97,16 @@ public class MotoristaBO {
         LocalDate validade = motorista.getCnhValidade();
         return validade != null && validade.isBefore(LocalDate.now());
     }
+    
+    public List<Motorista> listarAtivos() throws NegocioException {
+        try {
+            return motoristaDAO.buscarAtivos();
+        } catch (Exception e) {
+            System.err.println("Erro ao listar motoristas ativos:");
+            e.printStackTrace();
+            throw new NegocioException("Não foi possível listar os motoristas.", e);
+        }
+    }
 
     public List<Motorista> listarComPaginacao(String filtro, int pagina, int registrosPorPagina) throws NegocioException {
         try {
