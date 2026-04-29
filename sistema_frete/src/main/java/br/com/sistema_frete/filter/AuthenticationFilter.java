@@ -23,6 +23,7 @@ public class AuthenticationFilter implements Filter {
         boolean recursoPublico =
                 uri.equals(contextPath + "/login") ||
                 uri.equals(contextPath + "/login.jsp") ||
+                uri.equals(contextPath + "/home") ||
                 uri.equals(contextPath + "/erro.jsp") ||
                 uri.startsWith(contextPath + "/css/") ||
                 uri.startsWith(contextPath + "/js/") ||
