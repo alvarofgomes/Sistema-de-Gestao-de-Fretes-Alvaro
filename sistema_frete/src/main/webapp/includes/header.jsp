@@ -50,6 +50,10 @@
             <a href="${pageContext.request.contextPath}/veiculos">Veículos</a>
         </c:if>
 
+        <c:if test="${requestScope.paginaAtualMenu ne 'fretes'}">
+            <a href="${pageContext.request.contextPath}/fretes">Fretes</a>
+        </c:if>
+
         <a href="${pageContext.request.contextPath}/logout" class="sair">Sair</a>
     </nav>
 </header>
