@@ -24,7 +24,7 @@
 <c:set var="paginaAtualMenu" value="fretes" scope="request"/>
 <jsp:include page="/includes/header.jsp"/>
 
-<div class="container">
+<div class="container container-form">
 
     <div class="page-header">
         <h1>Novo Frete</h1>
@@ -38,7 +38,7 @@
         <div class="erro">${erro}</div>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/fretes" method="post">
+	<form action="${pageContext.request.contextPath}/fretes" method="post" class="form-cadastro">
 
         <h3>Partes Envolvidas</h3>
 

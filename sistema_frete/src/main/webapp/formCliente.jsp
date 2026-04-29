@@ -6,62 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro de Cliente</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-        }
-
-        .container {
-            width: 600px;
-            margin: 40px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 6px;
-        }
-
-        input, select {
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        .acoes-form {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-salvar {
-            padding: 10px;
-            background: #0d6efd;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .btn-cancelar {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            padding: 10px;
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .erro {
-            background: #f8d7da;
-            color: #842029;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-    </style>
-
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <script>
         function aplicarMascaraCNPJ(campo) {
             let v = campo.value.replace(/\D/g, "");
@@ -93,7 +38,7 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container container-form">
     <h2>${cliente.id != null ? 'Editar Cliente' : 'Cadastro de Cliente'}</h2>
 
     <c:if test="${not empty erro}">
@@ -102,7 +47,7 @@
         </div>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/clientes" method="post">
+	<form action="${pageContext.request.contextPath}/clientes" method="post" class="form-cadastro">
         <input type="hidden" name="id" value="${cliente.id}" />
         <input type="hidden" name="filtroRetorno" value="${param.filtro != null ? param.filtro : filtro}" />
         <input type="hidden" name="paginaRetorno" value="${param.pagina != null ? param.pagina : paginaAtual}" />
@@ -154,8 +99,8 @@
         </select>
 
         <div class="acoes-form">
-            <button type="submit" class="btn-salvar">Salvar</button>
-            <a class="btn-cancelar"
+            <button type="submit" class="btn btn-salvar">Salvar</button>
+            <a class="btn btn-cancelar" 
                href="${pageContext.request.contextPath}/clientes?filtro=${param.filtro != null ? param.filtro : filtro}&pagina=${param.pagina != null ? param.pagina : paginaAtual}&registrosPorPagina=${param.registrosPorPagina != null ? param.registrosPorPagina : registrosPorPagina}">
                 Cancelar
             </a>
