@@ -65,7 +65,8 @@ public class MotoristaDAO {
     
     public List<Motorista> buscarAtivos() {
         List<Motorista> lista = new ArrayList<>();
-        String sql = "SELECT id, nome, cpf, cnh_numero, cnh_categoria, cnh_validade, tipo_vinculo, status " +
+        String sql = "SELECT id, nome, cpf, data_nascimento, telefone, cnh_numero, " +
+                     "cnh_categoria, cnh_validade, tipo_vinculo, status " +
                      "FROM motorista WHERE status = 'ATIVO' ORDER BY nome ASC";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
