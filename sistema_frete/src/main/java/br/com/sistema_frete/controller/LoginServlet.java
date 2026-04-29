@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("usuarioLogin", usuario.getLogin());
             session.setAttribute("usuarioPerfil", usuario.getPerfil());
 
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect(request.getContextPath() + "/home");
 
         } catch (CadastroException e) {
             request.setAttribute("mensagemErro", e.getMessage());
