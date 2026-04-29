@@ -6,62 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro de Motorista</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-        }
-
-        .container {
-            width: 600px;
-            margin: 40px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 6px;
-        }
-
-        input, select {
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        .acoes-form {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-salvar {
-            padding: 10px;
-            background: #0d6efd;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .btn-cancelar {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            padding: 10px;
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .erro {
-            background: #f8d7da;
-            color: #842029;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-    </style>
-
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <script>
         function aplicarMascaraCPF(campo) {
             let v = campo.value.replace(/\D/g, "");
@@ -86,7 +31,7 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container container-form">
     <h2>${motorista.id != null ? 'Editar Motorista' : 'Cadastro de Motorista'}</h2>
 
     <c:if test="${not empty erro}">
@@ -95,7 +40,7 @@
         </div>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/motoristas" method="post">
+    <form action="${pageContext.request.contextPath}/motoristas" method="post" class="form-cadastro">
 
         <input type="hidden" name="id" value="${motorista.id}" />
         <input type="hidden" name="filtroRetorno" value="${param.filtro != null ? param.filtro : filtro}" />
@@ -146,9 +91,9 @@
         </select>
 
         <div class="acoes-form">
-            <button type="submit" class="btn-salvar">Salvar</button>
+            <button type="submit" class="btn btn-salvar">Salvar</button>
 
-            <a class="btn-cancelar"
+            <a class="btn btn-cancelar"
                href="${pageContext.request.contextPath}/motoristas?filtro=${param.filtro != null ? param.filtro : filtro}&pagina=${param.pagina != null ? param.pagina : paginaAtual}&registrosPorPagina=${param.registrosPorPagina != null ? param.registrosPorPagina : registrosPorPagina}">
                 Cancelar
             </a>
