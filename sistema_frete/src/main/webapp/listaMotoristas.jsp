@@ -6,10 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Motoristas - Sistema de Fretes</title>
-
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 </head>
-
 <body>
 
 <c:set var="paginaAtualMenu" value="motoristas" scope="request"/>
@@ -22,39 +20,27 @@
     </div>
 
     <div class="topo-botoes">
-        <a href="${pageContext.request.contextPath}/home.jsp" class="btn btn-secondary">
-            Voltar
-        </a>
-
-        <a href="${pageContext.request.contextPath}/motoristas?acao=novo&filtro=${filtro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}" class="btn btn-success">
-            Novo Motorista
-        </a>
+        <a href="${pageContext.request.contextPath}/home.jsp" class="btn btn-secondary">Voltar</a>
+        <a href="${pageContext.request.contextPath}/motoristas?acao=novo" class="btn btn-success">Novo Motorista</a>
     </div>
 
     <c:if test="${not empty sucesso}">
-        <div class="msg-sucesso">
-            ${sucesso}
-        </div>
+        <div class="msg-sucesso">${sucesso}</div>
     </c:if>
 
     <form action="${pageContext.request.contextPath}/motoristas" method="get" class="filtro-form">
         <label for="filtro">Nome:</label>
-
-        <input type="text" id="filtro" name="filtro" value="${filtro}" />
-
+        <input type="text" id="filtro" name="filtro" value="${filtro}" placeholder="Buscar motorista..." />
         <input type="hidden" name="pagina" value="1" />
         <input type="hidden" name="registrosPorPagina" value="${registrosPorPagina != null ? registrosPorPagina : 10}" />
-
-        <button type="submit" class="btn btn-primary">
-            Buscar
-        </button>
+        <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
 
     <div class="table-container">
         <table class="table table-motoristas">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Nome</th>
                     <th>CPF</th>
                     <th>Telefone</th>
@@ -66,7 +52,6 @@
                     <th>Ações</th>
                 </tr>
             </thead>
-
             <tbody>
                 <c:choose>
                     <c:when test="${not empty listaMotoristas}">
@@ -75,7 +60,7 @@
                                 <td>${motorista.id}</td>
                                 <td>${motorista.nome}</td>
                                 <td>${motorista.cpf}</td>
-                                <td>${motorista.telefone}</td>
+                                <td>${not empty motorista.telefone ? motorista.telefone : '—'}</td>
                                 <td>${motorista.cnhNumero}</td>
                                 <td>${motorista.cnhCategoria}</td>
                                 <td>${motorista.cnhValidade}</td>
@@ -83,47 +68,32 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${motorista.status == 'ATIVO'}">
-                                            <span class="status-ativo">ATIVO</span>
+                                            <span class="badge status-ativo">ATIVO</span>
                                         </c:when>
-
-                                        <c:when test="${motorista.status == 'INATIVO'}">
-                                            <span class="status-inativo">INATIVO</span>
-                                        </c:when>
-
                                         <c:when test="${motorista.status == 'SUSPENSO'}">
-                                            <span class="status-alerta">SUSPENSO</span>
+                                            <span class="badge status-suspenso">SUSPENSO</span>
                                         </c:when>
-
                                         <c:otherwise>
-                                            ${motorista.status}
+                                            <span class="badge status-inativo">INATIVO</span>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
-
                                 <td class="acoes">
                                     <a class="link-editar"
                                        href="${pageContext.request.contextPath}/motoristas?acao=editar&id=${motorista.id}&filtro=${filtro}&pagina=${paginaAtual}&registrosPorPagina=${registrosPorPagina}">
                                         Editar
                                     </a>
-
-                                    <c:choose>
-                                        <c:when test="${motorista.status != 'INATIVO'}">
-                                            <a class="link-inativar"
-                                               href="${pageContext.request.contextPath}/motoristas?acao=inativar&id=${motorista.id}"
-                                               onclick="return confirm('Tem certeza que deseja inativar este motorista?');">
-                                                Inativar
-                                            </a>
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <span class="status-inativo">Inativado</span>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <c:if test="${motorista.status != 'INATIVO'}">
+                                        <a class="link-inativar"
+                                           href="${pageContext.request.contextPath}/motoristas?acao=inativar&id=${motorista.id}"
+                                           onclick="return confirm('Inativar o motorista ${motorista.nome}?');">
+                                            Inativar
+                                        </a>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
                     </c:when>
-
                     <c:otherwise>
                         <tr>
                             <td colspan="10" class="mensagem-vazia">Nenhum motorista encontrado.</td>
@@ -136,21 +106,14 @@
 
     <div class="paginacao">
         <c:if test="${paginaAtual > 1}">
-            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual - 1}&registrosPorPagina=${registrosPorPagina}">
-                Anterior
-            </a>
+            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual - 1}&registrosPorPagina=${registrosPorPagina}">← Anterior</a>
         </c:if>
-
         <span>Página ${paginaAtual} de ${totalPaginas}</span>
-
         <c:if test="${paginaAtual < totalPaginas}">
-            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual + 1}&registrosPorPagina=${registrosPorPagina}">
-                Próximo
-            </a>
+            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual + 1}&registrosPorPagina=${registrosPorPagina}">Próximo →</a>
         </c:if>
     </div>
 
 </div>
-
 </body>
 </html>

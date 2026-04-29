@@ -8,7 +8,6 @@
     <title>Fretes - Sistema de Fretes</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 </head>
-
 <body>
 
 <c:set var="paginaAtualMenu" value="fretes" scope="request"/>
@@ -31,22 +30,19 @@
 
     <form action="${pageContext.request.contextPath}/fretes" method="get" class="filtro-form">
         <label for="filtro">Número / Remetente / Destinatário:</label>
-        <input type="text" id="filtro" name="filtro" value="${filtro}" />
-
+        <input type="text" id="filtro" name="filtro" value="${filtro}" placeholder="Buscar frete..." />
         <label for="statusFiltro">Status:</label>
         <select id="statusFiltro" name="statusFiltro">
             <option value="">Todos</option>
-            <option value="EMITIDO"           ${statusFiltro == 'EMITIDO'           ? 'selected' : ''}>Emitido</option>
-            <option value="SAIDA_CONFIRMADA"  ${statusFiltro == 'SAIDA_CONFIRMADA'  ? 'selected' : ''}>Saída Confirmada</option>
-            <option value="EM_TRANSITO"       ${statusFiltro == 'EM_TRANSITO'       ? 'selected' : ''}>Em Trânsito</option>
-            <option value="ENTREGUE"          ${statusFiltro == 'ENTREGUE'          ? 'selected' : ''}>Entregue</option>
-            <option value="NAO_ENTREGUE"      ${statusFiltro == 'NAO_ENTREGUE'      ? 'selected' : ''}>Não Entregue</option>
-            <option value="CANCELADO"         ${statusFiltro == 'CANCELADO'         ? 'selected' : ''}>Cancelado</option>
+            <option value="EMITIDO"          ${statusFiltro == 'EMITIDO'          ? 'selected' : ''}>Emitido</option>
+            <option value="SAIDA_CONFIRMADA" ${statusFiltro == 'SAIDA_CONFIRMADA' ? 'selected' : ''}>Saída Confirmada</option>
+            <option value="EM_TRANSITO"      ${statusFiltro == 'EM_TRANSITO'      ? 'selected' : ''}>Em Trânsito</option>
+            <option value="ENTREGUE"         ${statusFiltro == 'ENTREGUE'         ? 'selected' : ''}>Entregue</option>
+            <option value="NAO_ENTREGUE"     ${statusFiltro == 'NAO_ENTREGUE'     ? 'selected' : ''}>Não Entregue</option>
+            <option value="CANCELADO"        ${statusFiltro == 'CANCELADO'        ? 'selected' : ''}>Cancelado</option>
         </select>
-
         <input type="hidden" name="pagina" value="1" />
         <input type="hidden" name="registrosPorPagina" value="${registrosPorPagina != null ? registrosPorPagina : 10}" />
-
         <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
 
@@ -60,18 +56,17 @@
                     <th>Motorista</th>
                     <th>Veículo</th>
                     <th>Destino</th>
-                    <th>Previsão Entrega</th>
+                    <th>Previsão</th>
                     <th>Status</th>
                     <th>Ações</th>
                 </tr>
             </thead>
-
             <tbody>
                 <c:choose>
                     <c:when test="${not empty listaFretes}">
                         <c:forEach var="frete" items="${listaFretes}">
                             <tr>
-                                <td>${frete.numero}</td>
+                                <td><strong>${frete.numero}</strong></td>
                                 <td>${frete.remetente.razaoSocial}</td>
                                 <td>${frete.destinatario.razaoSocial}</td>
                                 <td>${frete.motorista.nome}</td>
@@ -81,28 +76,28 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${frete.status == 'EMITIDO'}">
-                                            <span class="status-info">EMITIDO</span>
+                                            <span class="badge status-emitido">EMITIDO</span>
                                         </c:when>
                                         <c:when test="${frete.status == 'SAIDA_CONFIRMADA'}">
-                                            <span class="status-alerta">SAÍDA CONFIRMADA</span>
+                                            <span class="badge status-saida">SAÍDA CONF.</span>
                                         </c:when>
                                         <c:when test="${frete.status == 'EM_TRANSITO'}">
-                                            <span class="status-transito">EM TRÂNSITO</span>
+                                            <span class="badge status-transito">EM TRÂNSITO</span>
                                         </c:when>
                                         <c:when test="${frete.status == 'ENTREGUE'}">
-                                            <span class="status-ativo">ENTREGUE</span>
+                                            <span class="badge status-entregue">ENTREGUE</span>
                                         </c:when>
                                         <c:when test="${frete.status == 'NAO_ENTREGUE'}">
-                                            <span class="status-nao-entregue">NÃO ENTREGUE</span>
+                                            <span class="badge status-nao-entregue">NÃO ENTREGUE</span>
                                         </c:when>
                                         <c:when test="${frete.status == 'CANCELADO'}">
-                                            <span class="status-inativo">CANCELADO</span>
+                                            <span class="badge status-cancelado">CANCELADO</span>
                                         </c:when>
                                         <c:otherwise>${frete.status}</c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td class="acoes">
-                                    <a class="link-editar"
+                                    <a class="link-detalhe"
                                        href="${pageContext.request.contextPath}/fretes?acao=detalhe&id=${frete.id}">
                                         Detalhe
                                     </a>
@@ -122,21 +117,14 @@
 
     <div class="paginacao">
         <c:if test="${paginaAtual > 1}">
-            <a href="${pageContext.request.contextPath}/fretes?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual - 1}&registrosPorPagina=${registrosPorPagina}">
-                Anterior
-            </a>
+            <a href="${pageContext.request.contextPath}/fretes?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual - 1}&registrosPorPagina=${registrosPorPagina}">← Anterior</a>
         </c:if>
-
         <span>Página ${paginaAtual} de ${totalPaginas}</span>
-
         <c:if test="${paginaAtual < totalPaginas}">
-            <a href="${pageContext.request.contextPath}/fretes?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual + 1}&registrosPorPagina=${registrosPorPagina}">
-                Próximo
-            </a>
+            <a href="${pageContext.request.contextPath}/fretes?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual + 1}&registrosPorPagina=${registrosPorPagina}">Próximo →</a>
         </c:if>
     </div>
 
 </div>
-
 </body>
 </html>
