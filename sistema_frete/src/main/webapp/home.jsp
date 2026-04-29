@@ -77,7 +77,6 @@
         </a>
 
         <a href="${pageContext.request.contextPath}/fretes" class="card-home">
-            <div class="card-icone">📦</div>
             <h2>Fretes</h2>
             <p>Emissão, acompanhamento e controle do ciclo completo de fretes.</p>
         </a>
