@@ -53,6 +53,8 @@ public class FreteBO {
             if (id == null) throw new FreteException("ID do frete não informado.");
             Frete frete = freteDAO.buscarPorId(id);
             if (frete == null) throw new FreteException("Frete não encontrado.");
+            // carrega ocorrências junto
+            frete.setOcorrencias(ocorrenciaDAO.listarPorFrete(id));
             return frete;
         } catch (FreteException e) {
             throw e;
