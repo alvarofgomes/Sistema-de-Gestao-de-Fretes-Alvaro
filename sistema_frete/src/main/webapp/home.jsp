@@ -48,6 +48,7 @@
     </div>
 
     <div class="cards-home">
+
         <a href="${pageContext.request.contextPath}/clientes" class="card-home">
             <h2>Clientes</h2>
             <p>Cadastro, edição, listagem e controle de clientes da transportadora.</p>
@@ -63,20 +64,16 @@
             <p>Controle frota, capacidade, status e disponibilidade dos veículos.</p>
         </a>
 
-        <a href="#" class="card-home desabilitado">
+        <a href="${pageContext.request.contextPath}/fretes" class="card-home">
             <h2>Fretes</h2>
-            <p>Módulo em desenvolvimento para emissão e acompanhamento de fretes.</p>
-        </a>
-
-        <a href="#" class="card-home desabilitado">
-            <h2>Ocorrências</h2>
-            <p>Registro futuro de eventos e ocorrências durante o transporte.</p>
+            <p>Emissão, acompanhamento e controle do ciclo completo de fretes.</p>
         </a>
 
         <a href="#" class="card-home desabilitado">
             <h2>Relatórios</h2>
             <p>Área futura para relatórios operacionais com JasperReports.</p>
         </a>
+
     </div>
 
 </div>

@@ -374,4 +374,16 @@ body {
     .table {
         font-size: 13px;
     }
+    
+    .status-transito {
+    color: #6f42c1;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.status-nao-entregue {
+    color: #c0392b;
+    font-weight: bold;
+    white-space: nowrap;
+}
 }
