@@ -106,7 +106,7 @@ public class ClienteDAO {
 
     public Cliente buscarPorId(Integer id) {
         String sql = "SELECT id, razao_social, nome_fantasia, cnpj, inscricao_estadual, " +
-                     "logradouro, numero, complemento, bairro, municipio, uf, cep, " +
+                     "logradouro, numero, complemento, bairro, cidade, uf, cep, " +
                      "telefone, email, status FROM cliente WHERE id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -126,7 +126,7 @@ public class ClienteDAO {
                     c.setNumero(rs.getString("numero"));
                     c.setComplemento(rs.getString("complemento"));
                     c.setBairro(rs.getString("bairro"));
-                    c.setMunicipio(rs.getString("municipio"));
+                    c.setCidade(rs.getString("cidade"));
                     c.setUf(rs.getString("uf"));
                     c.setCep(rs.getString("cep"));
                     c.setTelefone(rs.getString("telefone"));
@@ -199,7 +199,7 @@ public class ClienteDAO {
     private void inserir(Cliente cliente) {
         String sql = "INSERT INTO cliente " +
                      "(razao_social, nome_fantasia, cnpj, inscricao_estadual, logradouro, " +
-                     "numero, complemento, bairro, municipio, uf, cep, telefone, email, status) " +
+                     "numero, complemento, bairro, cidade, uf, cep, telefone, email, status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -217,7 +217,7 @@ public class ClienteDAO {
     private void atualizar(Cliente cliente) {
         String sql = "UPDATE cliente SET " +
                      "razao_social=?, nome_fantasia=?, cnpj=?, inscricao_estadual=?, logradouro=?, " +
-                     "numero=?, complemento=?, bairro=?, municipio=?, uf=?, cep=?, " +
+                     "numero=?, complemento=?, bairro=?, cidade=?, uf=?, cep=?, " +
                      "telefone=?, email=?, status=? WHERE id=?";
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -242,7 +242,7 @@ public class ClienteDAO {
         ps.setString(6, c.getNumero());
         ps.setString(7, c.getComplemento());
         ps.setString(8, c.getBairro());
-        ps.setString(9, c.getMunicipio());
+        ps.setString(9, c.getCidade());
         ps.setString(10, c.getUf());
         ps.setString(11, c.getCep());
         ps.setString(12, c.getTelefone());

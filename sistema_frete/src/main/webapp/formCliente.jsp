@@ -85,7 +85,7 @@
             <div class="form-section-title">Endereço</div>
             <div class="form-grid">
                 <div class="form-group col-full">
-                    <label>Logradouro</label>
+                    <label>Endereço:</label>
                     <input type="text" name="logradouro" value="${cliente.logradouro}" />
                 </div>
                 <div class="form-group">
@@ -101,8 +101,8 @@
                     <input type="text" name="bairro" value="${cliente.bairro}" />
                 </div>
                 <div class="form-group">
-                    <label>Município</label>
-                    <input type="text" name="municipio" value="${cliente.municipio}" />
+                    <label>Cidade:</label>
+                    <input type="text" name="cidade" value="${cliente.cidade}" />
                 </div>
                 <div class="form-group">
                     <label>UF</label>
