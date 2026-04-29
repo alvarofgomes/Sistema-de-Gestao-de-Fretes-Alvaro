@@ -195,7 +195,7 @@ public class ClienteServlet extends HttpServlet {
         cliente.setNumero(request.getParameter("numero"));
         cliente.setComplemento(request.getParameter("complemento"));
         cliente.setBairro(request.getParameter("bairro"));
-        cliente.setMunicipio(request.getParameter("municipio"));
+        cliente.setCidade(request.getParameter("cidade"));
         cliente.setUf(request.getParameter("uf"));
         cliente.setCep(request.getParameter("cep"));
         cliente.setTelefone(request.getParameter("telefone"));

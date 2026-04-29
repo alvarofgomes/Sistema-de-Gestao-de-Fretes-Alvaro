@@ -13,7 +13,7 @@ public class Cliente {
 	private String numero;
 	private String complemento;
 	private String bairro;
-	private String municipio;
+	private String cidade;
 	private String uf;
 	private String cep;
 	private String telefone;
@@ -24,7 +24,7 @@ public class Cliente {
 	}
 
 	public Cliente(Integer id, String razaoSocial, String nomeFantasia, String cnpj, String inscricaoEstadual,
-			String logradouro, String numero, String complemento, String bairro, String municipio, String uf,
+			String logradouro, String numero, String complemento, String bairro, String cidade, String uf,
 			String cep, String telefone, String email, StatusCliente status) {
 		this.id = id;
 		this.razaoSocial = razaoSocial;
@@ -35,7 +35,7 @@ public class Cliente {
 		this.numero = numero;
 		this.complemento = complemento;
 		this.bairro = bairro;
-		this.municipio = municipio;
+		this.cidade = cidade;
 		this.uf = uf;
 		this.cep = cep;
 		this.telefone = telefone;
@@ -115,12 +115,12 @@ public class Cliente {
 		this.bairro = bairro;
 	}
 
-	public String getMunicipio() {
-		return municipio;
+	public String getCidade() {
+		return cidade;
 	}
 
-	public void setMunicipio(String municipio) {
-		this.municipio = municipio;
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
 	}
 
 	public String getUf() {
