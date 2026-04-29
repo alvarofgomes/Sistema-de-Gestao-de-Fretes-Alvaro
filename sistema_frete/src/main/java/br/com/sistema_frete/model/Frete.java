@@ -4,6 +4,7 @@ import br.com.sistema_frete.enums.frete.FreteStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Frete {
 
@@ -29,6 +30,7 @@ public class Frete {
 	private LocalDate dataPrevisaoEntrega;
 	private LocalDateTime dataSaida;
 	private LocalDateTime dataEntrega;
+	private List<Ocorrencia> ocorrencias;
 
 	public Frete() {
 	}
@@ -238,5 +240,13 @@ public class Frete {
 
 	public void setDataEntrega(LocalDateTime dataEntrega) {
 		this.dataEntrega = dataEntrega;
+	}
+	
+	public List<Ocorrencia> getOcorrencias() {
+		return ocorrencias;
+	}
+
+	public void setOcorrencias(List<Ocorrencia> ocorrencias) {
+		this.ocorrencias = ocorrencias;
 	}
 }
