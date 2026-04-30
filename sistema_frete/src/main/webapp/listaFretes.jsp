@@ -20,7 +20,7 @@
     </div>
 
     <div class="topo-botoes">
-        <a href="${pageContext.request.contextPath}/home.jsp" class="btn btn-secondary">Voltar</a>
+        <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary">Voltar</a>
         <a href="${pageContext.request.contextPath}/fretes?acao=novo" class="btn btn-success">Novo Frete</a>
     </div>
 

@@ -33,7 +33,7 @@
 </style>
 
 <header class="app-header">
-    <a class="brand" href="${pageContext.request.contextPath}/home.jsp">
+    <a class="brand" href="${pageContext.request.contextPath}/home">
         Sistema de Gestão de Fretes
     </a>
 

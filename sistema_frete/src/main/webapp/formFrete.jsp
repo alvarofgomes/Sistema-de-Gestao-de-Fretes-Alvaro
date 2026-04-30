@@ -88,7 +88,7 @@
 
         <h3>Origem e Destino</h3>
 
-        <label for="municipioOrigem">Município de Origem:</label>
+        <label for="municipioOrigem">Cidade de Origem:</label>
         <input type="text" id="municipioOrigem" name="municipioOrigem" class="form-control"
                value="${frete != null ? frete.municipioOrigem : ''}" />
 
@@ -97,7 +97,9 @@
                style="width:80px"
                value="${frete != null ? frete.ufOrigem : ''}" />
 
-        <label for="municipioDestino">Município de Destino:</label>
+        <br style="clear: both;">
+
+        <label for="municipioDestino">Cidade de Destino:</label>
         <input type="text" id="municipioDestino" name="municipioDestino" class="form-control"
                value="${frete != null ? frete.municipioDestino : ''}" />
 
