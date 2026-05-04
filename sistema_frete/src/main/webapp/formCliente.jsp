@@ -104,10 +104,40 @@
                     <label>Cidade:</label>
                     <input type="text" name="cidade" value="${cliente.cidade}" />
                 </div>
-                <div class="form-group">
-                    <label>UF</label>
-                    <input type="text" name="uf" value="${cliente.uf}" maxlength="2" />
-                </div>
+				<div class="form-group">
+				    <label>UF</label>
+				    <select name="uf" required>
+				        <option value="">Selecione</option>
+				
+				        <option value="AC" ${cliente.uf == 'AC' ? 'selected' : ''}>AC - Acre</option>
+				        <option value="AL" ${cliente.uf == 'AL' ? 'selected' : ''}>AL - Alagoas</option>
+				        <option value="AP" ${cliente.uf == 'AP' ? 'selected' : ''}>AP - Amapá</option>
+				        <option value="AM" ${cliente.uf == 'AM' ? 'selected' : ''}>AM - Amazonas</option>
+				        <option value="BA" ${cliente.uf == 'BA' ? 'selected' : ''}>BA - Bahia</option>
+				        <option value="CE" ${cliente.uf == 'CE' ? 'selected' : ''}>CE - Ceará</option>
+				        <option value="DF" ${cliente.uf == 'DF' ? 'selected' : ''}>DF - Distrito Federal</option>
+				        <option value="ES" ${cliente.uf == 'ES' ? 'selected' : ''}>ES - Espírito Santo</option>
+				        <option value="GO" ${cliente.uf == 'GO' ? 'selected' : ''}>GO - Goiás</option>
+				        <option value="MA" ${cliente.uf == 'MA' ? 'selected' : ''}>MA - Maranhão</option>
+				        <option value="MT" ${cliente.uf == 'MT' ? 'selected' : ''}>MT - Mato Grosso</option>
+				        <option value="MS" ${cliente.uf == 'MS' ? 'selected' : ''}>MS - Mato Grosso do Sul</option>
+				        <option value="MG" ${cliente.uf == 'MG' ? 'selected' : ''}>MG - Minas Gerais</option>
+				        <option value="PA" ${cliente.uf == 'PA' ? 'selected' : ''}>PA - Pará</option>
+				        <option value="PB" ${cliente.uf == 'PB' ? 'selected' : ''}>PB - Paraíba</option>
+				        <option value="PR" ${cliente.uf == 'PR' ? 'selected' : ''}>PR - Paraná</option>
+				        <option value="PE" ${cliente.uf == 'PE' ? 'selected' : ''}>PE - Pernambuco</option>
+				        <option value="PI" ${cliente.uf == 'PI' ? 'selected' : ''}>PI - Piauí</option>
+				        <option value="RJ" ${cliente.uf == 'RJ' ? 'selected' : ''}>RJ - Rio de Janeiro</option>
+				        <option value="RN" ${cliente.uf == 'RN' ? 'selected' : ''}>RN - Rio Grande do Norte</option>
+				        <option value="RS" ${cliente.uf == 'RS' ? 'selected' : ''}>RS - Rio Grande do Sul</option>
+				        <option value="RO" ${cliente.uf == 'RO' ? 'selected' : ''}>RO - Rondônia</option>
+				        <option value="RR" ${cliente.uf == 'RR' ? 'selected' : ''}>RR - Roraima</option>
+				        <option value="SC" ${cliente.uf == 'SC' ? 'selected' : ''}>SC - Santa Catarina</option>
+				        <option value="SP" ${cliente.uf == 'SP' ? 'selected' : ''}>SP - São Paulo</option>
+				        <option value="SE" ${cliente.uf == 'SE' ? 'selected' : ''}>SE - Sergipe</option>
+				        <option value="TO" ${cliente.uf == 'TO' ? 'selected' : ''}>TO - Tocantins</option>
+				    </select>
+				</div>
                 <div class="form-group">
                     <label>CEP</label>
                     <input type="text" name="cep" value="${cliente.cep}"

@@ -106,11 +106,11 @@
 
     <div class="paginacao">
         <c:if test="${paginaAtual > 1}">
-            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual - 1}&registrosPorPagina=${registrosPorPagina}">← Anterior</a>
+            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual - 1}&registrosPorPagina=${registrosPorPagina}">Anterior</a>
         </c:if>
         <span>Página ${paginaAtual} de ${totalPaginas}</span>
         <c:if test="${paginaAtual < totalPaginas}">
-            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual + 1}&registrosPorPagina=${registrosPorPagina}">Próximo →</a>
+            <a href="${pageContext.request.contextPath}/motoristas?filtro=${filtro}&pagina=${paginaAtual + 1}&registrosPorPagina=${registrosPorPagina}">Próximo</a>
         </c:if>
     </div>
 
