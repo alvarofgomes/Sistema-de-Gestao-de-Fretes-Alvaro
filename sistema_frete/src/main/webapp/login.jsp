@@ -235,7 +235,24 @@ button[type="submit"] svg { width: 20px; height: 20px; }
 
     </form>
 
-    <c:if test="${not empty mensagemErro}">
+		<c:if test="${not empty sessionScope.sucessoCadastro}">
+			<div
+				style="margin-top: 16px; background: #d1e7dd; color: #0f5132; border-radius: 8px; padding: 10px 14px; font-size: 14px; font-weight: 600;">
+				${sessionScope.sucessoCadastro}</div>
+			<%
+			session.removeAttribute("sucessoCadastro");
+			%>
+		</c:if>
+
+		<div
+			style="text-align: center; margin-top: 20px; font-size: 13px; color: #6b7e8f;">
+			Ainda não tem conta? <a
+				href="${pageContext.request.contextPath}/cadastro"
+				style="color: #1a4fa8; font-weight: 700; text-decoration: none;">
+				Criar conta </a>
+		</div>
+
+		<c:if test="${not empty mensagemErro}">
         <div class="erro">${mensagemErro}</div>
     </c:if>
 
