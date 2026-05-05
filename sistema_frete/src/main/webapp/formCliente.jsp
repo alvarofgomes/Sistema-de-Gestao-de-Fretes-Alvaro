@@ -162,6 +162,52 @@
             </div>
         </div>
 
+		<%-- SEÇÃO DE ACESSO — aparece só na edição e só se não tiver usuário --%>
+		<c:if test="${cliente.id != null && !possuiUsuario}">
+		    <div class="form-section">
+		        <div class="form-section-title" style="color: var(--accent);">
+		            Criar Acesso ao Portal do Cliente
+		        </div>
+		        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+		            Este cliente ainda não possui login de acesso. 
+		            Preencha abaixo para criar o acesso ao portal.
+		        </p>
+		        <div class="form-grid">
+		            <div class="form-group">
+		                <label>Nome do Responsável</label>
+		                <input type="text" name="nomeResponsavel"
+		                       placeholder="Nome de quem vai acessar" />
+		            </div>
+		            <div class="form-group">
+		                <label>Login</label>
+		                <input type="text" name="loginNovo"
+		                       placeholder="Login de acesso" />
+		            </div>
+		            <div class="form-group">
+		                <label>Senha (mínimo 6 caracteres)</label>
+		                <input type="password" name="senhaNova" />
+		            </div>
+		            <div class="form-group">
+		                <label>Confirmar Senha</label>
+		                <input type="password" name="confirmarSenhaNova" />
+		            </div>
+		        </div>
+		        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">
+		            * Deixe em branco se não quiser criar o acesso agora.
+		        </p>
+		    </div>
+		</c:if>
+		
+		<%-- Se já tem usuário, apenas informa --%>
+		<c:if test="${cliente.id != null && possuiUsuario}">
+		    <div class="form-section">
+		        <div class="form-section-title">Acesso ao Portal</div>
+		        <p style="font-size:13px; color:var(--success); font-weight:600;">
+		            Este cliente já possui login de acesso ao portal configurado.
+		        </p>
+		    </div>
+		</c:if>
+	
         <div class="acoes-form">
             <button type="submit" class="btn btn-primary">Salvar</button>
             <a class="btn btn-secondary"
