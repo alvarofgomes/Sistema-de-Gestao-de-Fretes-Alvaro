@@ -79,7 +79,7 @@ public class ClienteServlet extends HttpServlet {
             preencherClienteComParametros(request, cliente);
             clienteBO.salvar(cliente);
 
-            // ← ADICIONAR: criar login se foi preenchido
+            //ADICIONAR: criar login se foi preenchido
             String loginNovo = request.getParameter("loginNovo");
             String senhaNova = request.getParameter("senhaNova");
 

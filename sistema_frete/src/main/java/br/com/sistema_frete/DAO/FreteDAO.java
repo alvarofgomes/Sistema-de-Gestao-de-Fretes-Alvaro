@@ -209,6 +209,92 @@ public class FreteDAO {
         }
     }
 
+    public List<Frete> buscarPorClientePaginado(Integer clienteId, String filtro,
+            String statusFiltro, int offset, int limit) {
+List<Frete> fretes = new ArrayList<>();
+String sql = "SELECT f.id, f.numero, f.status, f.data_emissao, f.data_previsao_entrega, " +
+"r.razao_social r_razao, d.razao_social d_razao, " +
+"m.nome m_nome, v.placa v_placa, f.municipio_destino, f.uf_destino " +
+"FROM frete f " +
+"JOIN cliente r ON r.id = f.id_remetente " +
+"JOIN cliente d ON d.id = f.id_destinatario " +
+"JOIN motorista m ON m.id = f.id_motorista " +
+"JOIN veiculo v ON v.id = f.id_veiculo " +
+"WHERE (f.id_remetente = ? OR f.id_destinatario = ?) " +
+"AND (f.numero ILIKE ? OR r.razao_social ILIKE ?) " +
+"AND (? = '' OR f.status = ?) " +
+"ORDER BY f.id DESC LIMIT ? OFFSET ?";
+
+try (Connection conn = ConnectionFactory.getConnection();
+PreparedStatement ps = conn.prepareStatement(sql)) {
+
+String like = "%" + (filtro == null ? "" : filtro.trim()) + "%";
+String sf   = statusFiltro == null ? "" : statusFiltro.trim();
+ps.setInt(1, clienteId);
+ps.setInt(2, clienteId);
+ps.setString(3, like);
+ps.setString(4, like);
+ps.setString(5, sf);
+ps.setString(6, sf);
+ps.setInt(7, limit);
+ps.setInt(8, offset);
+
+try (ResultSet rs = ps.executeQuery()) {
+while (rs.next()) {
+Frete f = new Frete();
+f.setId(rs.getInt("id"));
+f.setNumero(rs.getString("numero"));
+f.setStatus(br.com.sistema_frete.enums.frete.FreteStatus.valueOf(rs.getString("status")));
+f.setDataEmissao(rs.getDate("data_emissao").toLocalDate());
+f.setDataPrevisaoEntrega(rs.getDate("data_previsao_entrega").toLocalDate());
+f.setMunicipioDestino(rs.getString("municipio_destino"));
+f.setUfDestino(rs.getString("uf_destino"));
+
+Cliente r = new Cliente(); r.setRazaoSocial(rs.getString("r_razao"));
+Cliente d = new Cliente(); d.setRazaoSocial(rs.getString("d_razao"));
+Motorista m = new Motorista(); m.setNome(rs.getString("m_nome"));
+Veiculo v = new Veiculo(); v.setPlaca(rs.getString("v_placa"));
+
+f.setRemetente(r); f.setDestinatario(d);
+f.setMotorista(m); f.setVeiculo(v);
+fretes.add(f);
+}
+}
+} catch (Exception e) {
+e.printStackTrace();
+throw new RuntimeException("Erro ao buscar fretes do cliente.", e);
+}
+return fretes;
+}
+
+public int contarTotalPorCliente(Integer clienteId, String filtro, String statusFiltro) {
+String sql = "SELECT COUNT(*) FROM frete f " +
+"JOIN cliente r ON r.id = f.id_remetente " +
+"WHERE (f.id_remetente = ? OR f.id_destinatario = ?) " +
+"AND (f.numero ILIKE ? OR r.razao_social ILIKE ?) " +
+"AND (? = '' OR f.status = ?)";
+
+try (Connection conn = ConnectionFactory.getConnection();
+PreparedStatement ps = conn.prepareStatement(sql)) {
+
+String like = "%" + (filtro == null ? "" : filtro.trim()) + "%";
+String sf   = statusFiltro == null ? "" : statusFiltro.trim();
+ps.setInt(1, clienteId);
+ps.setInt(2, clienteId);
+ps.setString(3, like);
+ps.setString(4, like);
+ps.setString(5, sf);
+ps.setString(6, sf);
+
+try (ResultSet rs = ps.executeQuery()) {
+return rs.next() ? rs.getInt(1) : 0;
+}
+} catch (Exception e) {
+e.printStackTrace();
+throw new RuntimeException("Erro ao contar fretes do cliente.", e);
+}
+}
+    
     public void atualizarStatusVeiculo(Integer idVeiculo, StatusVeiculo status, Connection conn) throws SQLException {
         String sql = "UPDATE veiculo SET status=? WHERE id=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
