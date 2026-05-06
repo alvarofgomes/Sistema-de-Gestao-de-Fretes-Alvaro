@@ -17,7 +17,7 @@
 
     <div class="topo-botoes">
         <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary">Voltar</a>
-        <a href="${pageContext.request.contextPath}/usuarios?acao=novo" class="btn btn-success">Novo Usuário</a>
+        <a href="${pageContext.request.contextPath}/usuarios?acao=novo" class="btn btn-success">+ Novo Usuário</a>
     </div>
 
     <c:if test="${not empty sucesso}">

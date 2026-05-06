@@ -3,6 +3,7 @@ package br.com.sistema_frete.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+// Utilitário para hashing de senhas usando SHA-256
 public final class HashUtil {
 
     private HashUtil() {}

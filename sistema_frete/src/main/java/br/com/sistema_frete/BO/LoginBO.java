@@ -23,11 +23,7 @@ public class LoginBO {
             Usuario usuario = usuarioDAO.buscarPorLogin(login);
 
             if (usuario == null) {
-                throw new CadastroException("Usuário ou senha inválidos.");
-            }
-
-            if (!usuario.getSenha().equals(senha)) {
-                throw new CadastroException("Usuário ou senha inválidos.");
+                throw new CadastroException("Usuário ou senha inválidos.1");
             }
 
             if (usuario.getStatus() != StatusUsuario.ATIVO) {
