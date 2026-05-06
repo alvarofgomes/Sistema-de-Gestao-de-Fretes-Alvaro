@@ -1,11 +1,17 @@
 package br.com.sistema_frete.controller;
 
 import br.com.sistema_frete.BO.ClienteBO;
+import br.com.sistema_frete.BO.UsuarioBO;
+import br.com.sistema_frete.DAO.ClienteDAO;
+import br.com.sistema_frete.DAO.UsuarioDAO;
 import br.com.sistema_frete.enums.cliente.StatusCliente;
 import br.com.sistema_frete.enums.cliente.TipoCliente;
+import br.com.sistema_frete.enums.usuario.PerfilUsuario;
+import br.com.sistema_frete.enums.usuario.StatusUsuario;
 import br.com.sistema_frete.exception.CadastroException;
 import br.com.sistema_frete.exception.NegocioException;
 import br.com.sistema_frete.model.Cliente;
+import br.com.sistema_frete.model.Usuario;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -71,26 +77,60 @@ public class ClienteServlet extends HttpServlet {
 
         try {
             preencherClienteComParametros(request, cliente);
-
             clienteBO.salvar(cliente);
 
-            String filtroRetorno = request.getParameter("filtroRetorno");
-            String paginaRetorno = request.getParameter("paginaRetorno");
-            String registrosPorPaginaRetorno = request.getParameter("registrosPorPaginaRetorno");
+            // ← ADICIONAR: criar login se foi preenchido
+            String loginNovo = request.getParameter("loginNovo");
+            String senhaNova = request.getParameter("senhaNova");
+
+            if (loginNovo != null && !loginNovo.trim().isEmpty()
+                    && senhaNova != null && !senhaNova.trim().isEmpty()) {
+
+                // busca o id do cliente recém salvo pelo CNPJ
+                ClienteDAO clienteDAO = new ClienteDAO();
+                Cliente clienteSalvo = clienteDAO.buscarPorCnpj(cliente.getCnpj());
+
+                if (clienteSalvo != null) {
+                    Usuario usuario = new Usuario();
+                    usuario.setNome(request.getParameter("nomeResponsavel"));
+                    usuario.setLogin(loginNovo.trim());
+                    usuario.setPerfil(PerfilUsuario.CLIENTE);
+                    usuario.setStatus(StatusUsuario.ATIVO);
+                    usuario.setClienteId(clienteSalvo.getId());
+
+                    UsuarioBO usuarioBO = new UsuarioBO();
+                    usuarioBO.salvar(usuario, senhaNova);
+                }
+            }
 
             request.getSession().setAttribute("sucesso",
-                    cliente.getId() != null ? "Cliente atualizado com sucesso." : "Cliente cadastrado com sucesso.");
+                    cliente.getId() != null
+                            ? "Cliente atualizado com sucesso."
+                            : "Cliente cadastrado com sucesso.");
 
-            StringBuilder redirect = new StringBuilder(request.getContextPath() + "/clientes");
+            StringBuilder redirect = new StringBuilder(
+                    request.getContextPath() + "/clientes");
+            String filtroRetorno = request.getParameter("filtroRetorno");
+            String paginaRetorno = request.getParameter("paginaRetorno");
+            String regPorPagina  = request.getParameter("registrosPorPaginaRetorno");
+
             redirect.append("?filtro=").append(filtroRetorno != null ? filtroRetorno : "");
             redirect.append("&pagina=").append(paginaRetorno != null && !paginaRetorno.isEmpty() ? paginaRetorno : "1");
-            redirect.append("&registrosPorPagina=").append(registrosPorPaginaRetorno != null && !registrosPorPaginaRetorno.isEmpty() ? registrosPorPaginaRetorno : "10");
+            redirect.append("&registrosPorPagina=").append(regPorPagina != null && !regPorPagina.isEmpty() ? regPorPagina : "10");
 
             response.sendRedirect(redirect.toString());
 
         } catch (CadastroException e) {
             request.setAttribute("erro", e.getMessage());
             request.setAttribute("cliente", cliente);
+
+            // recarrega possuiUsuario para o form não perder o estado
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            if (cliente.getId() != null) {
+                request.setAttribute("possuiUsuario",
+                        usuarioDAO.clientePossuiUsuario(cliente.getId()));
+            }
+
             request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
 
         } catch (NegocioException e) {
@@ -101,7 +141,6 @@ public class ClienteServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Erro inesperado ao salvar cliente:");
             e.printStackTrace();
-
             request.setAttribute("mensagemErro", "Ocorreu um erro inesperado ao salvar o cliente.");
             request.setAttribute("voltarUrl", request.getContextPath() + "/clientes");
             request.getRequestDispatcher("/erro.jsp").forward(request, response);
@@ -161,13 +200,16 @@ public class ClienteServlet extends HttpServlet {
         }
 
         Cliente cliente = clienteBO.buscarPorId(id);
-
         request.setAttribute("cliente", cliente);
-        
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        boolean possuiUsuario = usuarioDAO.clientePossuiUsuario(id);
+        request.setAttribute("possuiUsuario", possuiUsuario);
+
         request.setAttribute("filtro", request.getParameter("filtro"));
         request.setAttribute("paginaAtual", request.getParameter("pagina"));
         request.setAttribute("registrosPorPagina", request.getParameter("registrosPorPagina"));
-        
+
         request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
     }
 

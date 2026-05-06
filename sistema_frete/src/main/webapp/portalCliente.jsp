@@ -1,36 +1,51 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Fretes - Sistema de Fretes</title>
+    <title>Meus Fretes - Sistema de Fretes</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <style>
+        body {
+            background:
+                linear-gradient(rgba(6,20,50,.15), rgba(6,20,50,.30)),
+                url('${pageContext.request.contextPath}/assets/images/OptimusPrimeNoPrime.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
 <body>
 
-<c:set var="paginaAtualMenu" value="fretes" scope="request"/>
-<jsp:include page="/includes/header.jsp"/>
+<header class="app-header">
+    <a class="brand" href="${pageContext.request.contextPath}/portal-cliente">
+        Sistema de Gestão de Fretes
+    </a>
+    <nav class="app-nav">
+        <span style="color:rgba(255,255,255,0.7); font-size:13px;">
+            Olá, <strong>${sessionScope.usuarioLogado}</strong>
+        </span>
+        <a href="${pageContext.request.contextPath}/logout" class="sair">Sair</a>
+    </nav>
+</header>
 
-<div class="container">
+<div class="container" style="margin-top: 28px;">
 
     <div class="page-header">
-        <h1>Fretes</h1>
-    </div>
-
-    <div class="topo-botoes">
-        <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary">Voltar</a>
-        <a href="${pageContext.request.contextPath}/fretes?acao=novo" class="btn btn-success">Novo Frete</a>
+        <h1>Meus Fretes</h1>
     </div>
 
     <c:if test="${not empty sucesso}">
         <div class="msg-sucesso">${sucesso}</div>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/fretes" method="get" class="filtro-form">
-        <label for="filtro">Número / Remetente / Destinatário:</label>
-        <input type="text" id="filtro" name="filtro" value="${filtro}" placeholder="Buscar frete..." />
+    <form action="${pageContext.request.contextPath}/portal-cliente" method="get" class="filtro-form">
+        <label for="filtro">Número do Frete:</label>
+        <input type="text" id="filtro" name="filtro" value="${filtro}" placeholder="Buscar..." />
+
         <label for="statusFiltro">Status:</label>
         <select id="statusFiltro" name="statusFiltro">
             <option value="">Todos</option>
@@ -41,8 +56,8 @@
             <option value="NAO_ENTREGUE"     ${statusFiltro == 'NAO_ENTREGUE'     ? 'selected' : ''}>Não Entregue</option>
             <option value="CANCELADO"        ${statusFiltro == 'CANCELADO'        ? 'selected' : ''}>Cancelado</option>
         </select>
+
         <input type="hidden" name="pagina" value="1" />
-        <input type="hidden" name="registrosPorPagina" value="${registrosPorPagina != null ? registrosPorPagina : 10}" />
         <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
 
@@ -53,12 +68,9 @@
                     <th>Número</th>
                     <th>Remetente</th>
                     <th>Destinatário</th>
-                    <th>Motorista</th>
-                    <th>Veículo</th>
                     <th>Destino</th>
-                    <th>Previsão</th>
+                    <th>Previsão de Entrega</th>
                     <th>Status</th>
-                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,8 +81,6 @@
                                 <td><strong>${frete.numero}</strong></td>
                                 <td>${frete.remetente.razaoSocial}</td>
                                 <td>${frete.destinatario.razaoSocial}</td>
-                                <td>${frete.motorista.nome}</td>
-                                <td>${frete.veiculo.placa}</td>
                                 <td>${frete.municipioDestino}/${frete.ufDestino}</td>
                                 <td>${frete.dataPrevisaoEntrega}</td>
                                 <td>
@@ -79,7 +89,7 @@
                                             <span class="badge status-emitido">EMITIDO</span>
                                         </c:when>
                                         <c:when test="${frete.status == 'SAIDA_CONFIRMADA'}">
-                                            <span class="badge status-saida">SAÍDA CONF.</span>
+                                            <span class="badge status-saida">SAÍDA CONFIRMADA</span>
                                         </c:when>
                                         <c:when test="${frete.status == 'EM_TRANSITO'}">
                                             <span class="badge status-transito">EM TRÂNSITO</span>
@@ -96,18 +106,12 @@
                                         <c:otherwise>${frete.status}</c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td class="acoes">
-                                    <a class="link-detalhe"
-                                       href="${pageContext.request.contextPath}/fretes?acao=detalhe&id=${frete.id}">
-                                        Detalhe
-                                    </a>
-                                </td>
                             </tr>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
                         <tr>
-                            <td colspan="9" class="mensagem-vazia">Nenhum frete encontrado.</td>
+                            <td colspan="6" class="mensagem-vazia">Nenhum frete encontrado.</td>
                         </tr>
                     </c:otherwise>
                 </c:choose>
@@ -117,11 +121,11 @@
 
     <div class="paginacao">
         <c:if test="${paginaAtual > 1}">
-            <a href="${pageContext.request.contextPath}/fretes?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual - 1}&registrosPorPagina=${registrosPorPagina}">Anterior</a>
+            <a href="${pageContext.request.contextPath}/portal-cliente?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual - 1}">← Anterior</a>
         </c:if>
         <span>Página ${paginaAtual} de ${totalPaginas}</span>
         <c:if test="${paginaAtual < totalPaginas}">
-            <a href="${pageContext.request.contextPath}/fretes?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual + 1}&registrosPorPagina=${registrosPorPagina}">Próximo</a>
+            <a href="${pageContext.request.contextPath}/portal-cliente?filtro=${filtro}&statusFiltro=${statusFiltro}&pagina=${paginaAtual + 1}">Próximo →</a>
         </c:if>
     </div>
 
