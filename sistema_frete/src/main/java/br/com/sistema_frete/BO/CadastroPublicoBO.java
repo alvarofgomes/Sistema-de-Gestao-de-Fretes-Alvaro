@@ -61,7 +61,6 @@ public class CadastroPublicoBO {
             if (!senha.equals(confirmaSenha))
                 throw new CadastroException("A senha e a confirmação não conferem.");
 
-            // ── Transação: insere cliente + usuário juntos
             conn = ConnectionFactory.getConnection();
             conn.setAutoCommit(false);
 

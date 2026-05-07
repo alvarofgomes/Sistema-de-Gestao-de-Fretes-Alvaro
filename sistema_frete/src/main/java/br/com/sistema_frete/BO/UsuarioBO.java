@@ -27,10 +27,10 @@ public class UsuarioBO {
             Usuario usuario = usuarioDAO.buscarPorLogin(login.trim());
 
             if (usuario == null)
-                throw new CadastroException("Usuário ou senha inválidos.");
+                throw new CadastroException("senha vazia ou usuário inválidos.");
 
             if (!usuario.getSenha().equals(HashUtil.hash(senha)))
-                throw new CadastroException("Usuário ou senha inválidos.");
+                throw new CadastroException("Sua senha deve conter no mínimo 6 caracteres ou o usuário informado é inválido.");
 
             if (usuario.getStatus() != StatusUsuario.ATIVO)
                 throw new CadastroException("Usuário inativo. Entre em contato com o administrador.");
@@ -45,7 +45,7 @@ public class UsuarioBO {
             throw new NegocioException("Não foi possível realizar o login.", e);
         }
     }
-    
+
     public List<Usuario> listarComPaginacao(String filtro, int pagina,
                                             int registrosPorPagina) throws NegocioException {
         try {
@@ -136,7 +136,7 @@ public class UsuarioBO {
             throw new NegocioException("Não foi possível salvar o usuário.", e);
         }
     }
-
+    
     public void inativar(Integer id) throws NegocioException {
         try {
             if (id == null)

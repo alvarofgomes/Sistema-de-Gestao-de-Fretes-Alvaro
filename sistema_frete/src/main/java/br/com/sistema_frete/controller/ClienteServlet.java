@@ -202,6 +202,7 @@ public class ClienteServlet extends HttpServlet {
         Cliente cliente = clienteBO.buscarPorId(id);
         request.setAttribute("cliente", cliente);
 
+        //verifica se já tem usuário vinculado
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         boolean possuiUsuario = usuarioDAO.clientePossuiUsuario(id);
         request.setAttribute("possuiUsuario", possuiUsuario);
