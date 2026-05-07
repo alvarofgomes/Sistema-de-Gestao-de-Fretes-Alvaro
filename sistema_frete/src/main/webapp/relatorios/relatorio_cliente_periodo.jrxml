@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN"
+ "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport
+    name="relatorio_cliente_periodo"
+    pageWidth="842"
+    pageHeight="595"
+    orientation="Landscape"
+    columnWidth="802"
+    leftMargin="20"
+    rightMargin="20"
+    topMargin="20"
+    bottomMargin="20">
+
+    <parameter name="ID_CLIENTE" class="java.lang.Integer"/>
+    <parameter name="DATA_INICIAL" class="java.sql.Date"/>
+    <parameter name="DATA_FINAL" class="java.sql.Date"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT
+                f.numero,
+                r.razao_social AS remetente,
+                d.razao_social AS destinatario,
+                m.nome AS motorista,
+                f.cidade_destino || '/' || f.uf_destino AS destino,
+                f.data_emissao,
+                f.valor_total,
+                f.status
+            FROM frete f
+            JOIN cliente r ON r.id = f.id_remetente
+            JOIN cliente d ON d.id = f.id_destinatario
+            JOIN motorista m ON m.id = f.id_motorista
+			WHERE (
+			    f.id_remetente = $P{ID_CLIENTE}
+			    OR f.id_destinatario = $P{ID_CLIENTE}
+			)
+			AND DATE(f.data_emissao) BETWEEN $P{DATA_INICIAL} AND $P{DATA_FINAL}
+			ORDER BY f.data_emissao DESC
+        ]]>
+    </queryString>
+
+    <field name="numero" class="java.lang.String"/>
+    <field name="remetente" class="java.lang.String"/>
+    <field name="destinatario" class="java.lang.String"/>
+    <field name="motorista" class="java.lang.String"/>
+    <field name="destino" class="java.lang.String"/>
+    <field name="data_emissao" class="java.sql.Date"/>
+    <field name="valor_total" class="java.math.BigDecimal"/>
+    <field name="status" class="java.lang.String"/>
+
+    <variable name="TOTAL_VALOR" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_total}]]></variableExpression>
+    </variable>
+
+    <title>
+        <band height="70">
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="55" backcolor="#1A3A6B"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+
+            <staticText>
+                <reportElement x="18" y="10" width="420" height="24" forecolor="#FFFFFF"/>
+                <textElement><font size="18" isBold="true"/></textElement>
+                <text><![CDATA[Relatório de Fretes por Cliente]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="18" y="35" width="430" height="14" forecolor="#E8EFF8"/>
+                <textElement><font size="9"/></textElement>
+                <text><![CDATA[Extrato de fretes do cliente no período informado]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="630" y="14" width="150" height="16" forecolor="#FFFFFF"/>
+                <textElement textAlignment="Right"><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[Sistema de Gestão de Fretes]]></text>
+            </staticText>
+
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement x="630" y="33" width="150" height="16" forecolor="#E8EFF8"/>
+                <textElement textAlignment="Right"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="28">
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="24" backcolor="#E8EFF8"/>
+                <graphicElement><pen lineColor="#D1D9E0"/></graphicElement>
+            </rectangle>
+
+            <staticText><reportElement x="8" y="5" width="82" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[NÚMERO]]></text></staticText>
+            <staticText><reportElement x="100" y="5" width="125" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[REMETENTE]]></text></staticText>
+            <staticText><reportElement x="235" y="5" width="125" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[DESTINATÁRIO]]></text></staticText>
+            <staticText><reportElement x="370" y="5" width="105" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[MOTORISTA]]></text></staticText>
+            <staticText><reportElement x="485" y="5" width="90" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[DESTINO]]></text></staticText>
+            <staticText><reportElement x="585" y="5" width="70" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[EMISSÃO]]></text></staticText>
+            <staticText><reportElement x="665" y="5" width="65" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[STATUS]]></text></staticText>
+            <staticText><reportElement x="735" y="5" width="60" height="14" forecolor="#1A3A6B"/><textElement textAlignment="Right"><font size="8" isBold="true"/></textElement><text><![CDATA[VALOR]]></text></staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="24">
+            <line>
+                <reportElement x="0" y="23" width="802" height="1" forecolor="#D1D9E0"/>
+            </line>
+
+            <textField isBlankWhenNull="true"><reportElement x="8" y="4" width="82" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="100" y="4" width="125" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{remetente}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="235" y="4" width="125" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{destinatario}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="370" y="4" width="105" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{motorista}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="485" y="4" width="90" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression></textField>
+
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement x="585" y="4" width="70" height="14"/>
+                <textElement><font size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{data_emissao}]]></textFieldExpression>
+            </textField>
+
+            <textField isBlankWhenNull="true">
+                <reportElement x="665" y="4" width="65" height="14"/>
+                <textElement><font size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+            </textField>
+
+            <textField pattern="R$ #,##0.00" isBlankWhenNull="true">
+                <reportElement x="735" y="4" width="60" height="14"/>
+                <textElement textAlignment="Right"><font size="8" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <pageFooter>
+        <band height="25">
+            <line>
+                <reportElement x="0" y="0" width="802" height="1" forecolor="#D1D9E0"/>
+            </line>
+
+            <staticText>
+                <reportElement x="0" y="7" width="350" height="14" forecolor="#6B7E8F"/>
+                <textElement><font size="8"/></textElement>
+                <text><![CDATA[Relatório gerado pelo Sistema de Gestão de Fretes]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="700" y="7" width="102" height="14" forecolor="#6B7E8F"/>
+                <textElement textAlignment="Right"><font size="8"/></textElement>
+                <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <summary>
+        <band height="36">
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="30" backcolor="#E8EFF8"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+
+            <staticText>
+                <reportElement x="8" y="8" width="620" height="14" forecolor="#1A3A6B"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[TOTAL GERAL]]></text>
+            </staticText>
+
+            <textField pattern="R$ #,##0.00">
+                <reportElement x="650" y="8" width="145" height="14" forecolor="#1A3A6B"/>
+                <textElement textAlignment="Right"><font size="9" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$V{TOTAL_VALOR}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>

@@ -46,9 +46,10 @@ public class RelatorioClienteServlet extends HttpServlet {
             JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlPath);
 
             Map<String, Object> parametros = new HashMap<>();
-            parametros.put("ID_CLIENTE",   Integer.parseInt(idClienteStr));
-            parametros.put("DATA_INICIO",  java.sql.Date.valueOf(dataInicio));
-            parametros.put("DATA_FIM",     java.sql.Date.valueOf(dataFim));
+
+            parametros.put("ID_CLIENTE", Integer.parseInt(req.getParameter("idCliente")));
+            parametros.put("DATA_INICIAL", java.sql.Date.valueOf(req.getParameter("dataInicio")));
+            parametros.put("DATA_FINAL", java.sql.Date.valueOf(req.getParameter("dataFim")));
 
             conn = ConnectionFactory.getConnection();
             JasperPrint jasperPrint = JasperFillManager.fillReport(

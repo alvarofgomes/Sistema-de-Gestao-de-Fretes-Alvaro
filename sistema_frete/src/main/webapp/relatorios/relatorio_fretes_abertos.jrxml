@@ -3,7 +3,7 @@
  "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 
 <jasperReport
-    name="relatorio_fretes"
+    name="relatorio_fretes_abertos"
     pageWidth="842"
     pageHeight="595"
     orientation="Landscape"
@@ -32,52 +32,42 @@
         ]]>
     </queryString>
 
-    <field name="numero" class="java.lang.String"/>
-    <field name="remetente" class="java.lang.String"/>
-    <field name="destinatario" class="java.lang.String"/>
-    <field name="motorista" class="java.lang.String"/>
-    <field name="destino" class="java.lang.String"/>
+    <field name="numero"               class="java.lang.String"/>
+    <field name="remetente"            class="java.lang.String"/>
+    <field name="destinatario"         class="java.lang.String"/>
+    <field name="motorista"            class="java.lang.String"/>
+    <field name="destino"              class="java.lang.String"/>
     <field name="data_previsao_entrega" class="java.sql.Date"/>
-    <field name="dias_atraso" class="java.lang.Integer"/>
+    <field name="dias_atraso"          class="java.lang.Long"/>
 
     <title>
         <band height="70">
             <rectangle>
                 <reportElement x="0" y="0" width="802" height="55" backcolor="#1A3A6B"/>
-                <graphicElement>
-                    <pen lineWidth="0"/>
-                </graphicElement>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
             </rectangle>
 
             <staticText>
                 <reportElement x="18" y="10" width="420" height="24" forecolor="#FFFFFF"/>
-                <textElement>
-                    <font size="18" isBold="true"/>
-                </textElement>
+                <textElement><font size="18" isBold="true"/></textElement>
                 <text><![CDATA[Relatório de Fretes em Aberto]]></text>
             </staticText>
 
             <staticText>
                 <reportElement x="18" y="35" width="430" height="14" forecolor="#E8EFF8"/>
-                <textElement>
-                    <font size="9"/>
-                </textElement>
+                <textElement><font size="9"/></textElement>
                 <text><![CDATA[Fretes emitidos, com saída confirmada ou em trânsito]]></text>
             </staticText>
 
             <staticText>
                 <reportElement x="630" y="14" width="150" height="16" forecolor="#FFFFFF"/>
-                <textElement textAlignment="Right">
-                    <font size="9" isBold="true"/>
-                </textElement>
+                <textElement textAlignment="Right"><font size="9" isBold="true"/></textElement>
                 <text><![CDATA[Sistema de Gestão de Fretes]]></text>
             </staticText>
 
             <textField pattern="dd/MM/yyyy HH:mm">
                 <reportElement x="630" y="33" width="150" height="16" forecolor="#E8EFF8"/>
-                <textElement textAlignment="Right">
-                    <font size="9"/>
-                </textElement>
+                <textElement textAlignment="Right"><font size="9"/></textElement>
                 <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
             </textField>
         </band>
@@ -87,18 +77,16 @@
         <band height="28">
             <rectangle>
                 <reportElement x="0" y="0" width="802" height="24" backcolor="#E8EFF8"/>
-                <graphicElement>
-                    <pen lineColor="#D1D9E0"/>
-                </graphicElement>
+                <graphicElement><pen lineColor="#D1D9E0"/></graphicElement>
             </rectangle>
 
-            <staticText><reportElement x="8" y="5" width="82" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[NÚMERO]]></text></staticText>
+            <staticText><reportElement x="8"   y="5" width="82"  height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[NÚMERO]]></text></staticText>
             <staticText><reportElement x="100" y="5" width="145" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[REMETENTE]]></text></staticText>
             <staticText><reportElement x="255" y="5" width="145" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[DESTINATÁRIO]]></text></staticText>
             <staticText><reportElement x="410" y="5" width="110" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[MOTORISTA]]></text></staticText>
-            <staticText><reportElement x="530" y="5" width="95" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[DESTINO]]></text></staticText>
-            <staticText><reportElement x="635" y="5" width="85" height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[PREVISÃO]]></text></staticText>
-            <staticText><reportElement x="730" y="5" width="60" height="14" forecolor="#1A3A6B"/><textElement textAlignment="Center"><font size="8" isBold="true"/></textElement><text><![CDATA[ATRASO]]></text></staticText>
+            <staticText><reportElement x="530" y="5" width="95"  height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[DESTINO]]></text></staticText>
+            <staticText><reportElement x="635" y="5" width="85"  height="14" forecolor="#1A3A6B"/><textElement><font size="8" isBold="true"/></textElement><text><![CDATA[PREVISÃO]]></text></staticText>
+            <staticText><reportElement x="730" y="5" width="60"  height="14" forecolor="#1A3A6B"/><textElement textAlignment="Center"><font size="8" isBold="true"/></textElement><text><![CDATA[ATRASO]]></text></staticText>
         </band>
     </columnHeader>
 
@@ -108,25 +96,21 @@
                 <reportElement x="0" y="23" width="802" height="1" forecolor="#D1D9E0"/>
             </line>
 
-            <textField isBlankWhenNull="true"><reportElement x="8" y="4" width="82" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="8"   y="4" width="82"  height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression></textField>
             <textField isBlankWhenNull="true"><reportElement x="100" y="4" width="145" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{remetente}]]></textFieldExpression></textField>
             <textField isBlankWhenNull="true"><reportElement x="255" y="4" width="145" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{destinatario}]]></textFieldExpression></textField>
             <textField isBlankWhenNull="true"><reportElement x="410" y="4" width="110" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{motorista}]]></textFieldExpression></textField>
-            <textField isBlankWhenNull="true"><reportElement x="530" y="4" width="95" height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="530" y="4" width="95"  height="14"/><textElement><font size="8"/></textElement><textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression></textField>
 
             <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement x="635" y="4" width="85" height="14"/>
-                <textElement>
-                    <font size="8"/>
-                </textElement>
+                <textElement><font size="8"/></textElement>
                 <textFieldExpression><![CDATA[$F{data_previsao_entrega}]]></textFieldExpression>
             </textField>
 
             <textField isBlankWhenNull="true">
                 <reportElement x="730" y="4" width="60" height="14"/>
-                <textElement textAlignment="Center">
-                    <font size="8" isBold="true"/>
-                </textElement>
+                <textElement textAlignment="Center"><font size="8" isBold="true"/></textElement>
                 <textFieldExpression><![CDATA[$F{dias_atraso} + " dias"]]></textFieldExpression>
             </textField>
         </band>
@@ -139,18 +123,14 @@
             </line>
 
             <staticText>
-                <reportElement x="0" y="7" width="250" height="14" forecolor="#6B7E8F"/>
-                <textElement>
-                    <font size="8"/>
-                </textElement>
+                <reportElement x="0" y="7" width="350" height="14" forecolor="#6B7E8F"/>
+                <textElement><font size="8"/></textElement>
                 <text><![CDATA[Relatório gerado pelo Sistema de Gestão de Fretes]]></text>
             </staticText>
 
             <textField>
-                <reportElement x="700" y="7" width="50" height="14" forecolor="#6B7E8F"/>
-                <textElement textAlignment="Right">
-                    <font size="8"/>
-                </textElement>
+                <reportElement x="700" y="7" width="102" height="14" forecolor="#6B7E8F"/>
+                <textElement textAlignment="Right"><font size="8"/></textElement>
                 <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
             </textField>
         </band>
