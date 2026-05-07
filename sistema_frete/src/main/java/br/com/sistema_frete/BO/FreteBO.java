@@ -268,11 +268,11 @@ public class FreteBO {
             throw new FreteException("Motorista é obrigatório.");
         if (frete.getVeiculo() == null || frete.getVeiculo().getId() == null)
             throw new FreteException("Veículo é obrigatório.");
-        if (frete.getMunicipioOrigem() == null || frete.getMunicipioOrigem().trim().isEmpty())
+        if (frete.getCidadeOrigem() == null || frete.getCidadeOrigem().trim().isEmpty())
             throw new FreteException("Município de origem é obrigatório.");
         if (frete.getUfOrigem() == null || frete.getUfOrigem().trim().isEmpty())
             throw new FreteException("UF de origem é obrigatória.");
-        if (frete.getMunicipioDestino() == null || frete.getMunicipioDestino().trim().isEmpty())
+        if (frete.getCidadeDestino() == null || frete.getCidadeDestino().trim().isEmpty())
             throw new FreteException("Município de destino é obrigatório.");
         if (frete.getUfDestino() == null || frete.getUfDestino().trim().isEmpty())
             throw new FreteException("UF de destino é obrigatória.");

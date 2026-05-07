@@ -81,10 +81,10 @@
             <p>Emissão, acompanhamento e controle do ciclo completo de fretes.</p>
         </a>
 
-        <a href="#" class="card-home desabilitado">
-            <h2>Relatórios</h2>
-            <p>Relatórios operacionais com JasperReports. Em breve.</p>
-        </a>
+		<a href="${pageContext.request.contextPath}/relatorios" class="card-home">
+		    <h2>Relatórios</h2>
+		    <p>Fretes em aberto, romaneio de carga e extrato por cliente.</p>
+		</a>
     </div>
 
 </div>

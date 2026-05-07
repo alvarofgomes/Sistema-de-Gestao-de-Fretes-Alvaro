@@ -93,7 +93,7 @@ public class CadastroPublicoBO {
     private Integer inserirClienteRetornandoId(Cliente c, Connection conn) throws SQLException {
         String sql = "INSERT INTO cliente " +
                      "(razao_social, nome_fantasia, cnpj, inscricao_estadual, logradouro, " +
-                     "numero, complemento, bairro, municipio, uf, cep, telefone, email, status) " +
+                     "numero, complemento, bairro, cidade, uf, cep, telefone, email, status) " +
                      "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -71,7 +71,7 @@
                                 <td>${frete.destinatario.razaoSocial}</td>
                                 <td>${frete.motorista.nome}</td>
                                 <td>${frete.veiculo.placa}</td>
-                                <td>${frete.municipioDestino}/${frete.ufDestino}</td>
+                                <td>${frete.cidadeDestino}/${frete.ufDestino}</td>
                                 <td>${frete.dataPrevisaoEntrega}</td>
                                 <td>
                                     <c:choose>

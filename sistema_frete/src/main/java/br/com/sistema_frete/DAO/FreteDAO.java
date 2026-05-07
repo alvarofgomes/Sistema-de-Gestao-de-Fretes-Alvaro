@@ -46,7 +46,7 @@ public class FreteDAO {
 
     public void inserir(Frete frete, Connection conn) throws SQLException {
         String sql = "INSERT INTO frete (numero, id_remetente, id_destinatario, id_motorista, " +
-                     "id_veiculo, municipio_origem, uf_origem, municipio_destino, uf_destino, " +
+                     "id_veiculo, cidade_origem, uf_origem, cidade_destino, uf_destino, " +
                      "descricao_carga, peso_kg, volumes, valor_frete, aliquota_icms, valor_icms, " +
                      "valor_total, status, data_emissao, data_previsao_entrega) " +
                      "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -57,9 +57,9 @@ public class FreteDAO {
             ps.setInt(3, frete.getDestinatario().getId());
             ps.setInt(4, frete.getMotorista().getId());
             ps.setInt(5, frete.getVeiculo().getId());
-            ps.setString(6, frete.getMunicipioOrigem());
+            ps.setString(6, frete.getCidadeOrigem());
             ps.setString(7, frete.getUfOrigem());
-            ps.setString(8, frete.getMunicipioDestino());
+            ps.setString(8, frete.getCidadeDestino());
             ps.setString(9, frete.getUfDestino());
             ps.setString(10, frete.getDescricaoCarga());
             ps.setBigDecimal(11, frete.getPesoKg());
@@ -134,7 +134,7 @@ public class FreteDAO {
         String sql = "SELECT f.id, f.numero, f.status, f.data_emissao, f.data_previsao_entrega, " +
                      "r.razao_social r_razao, d.razao_social d_razao, " +
                      "m.nome m_nome, v.placa v_placa, " +
-                     "f.municipio_destino, f.uf_destino " +
+                     "f.cidade_destino, f.uf_destino " +
                      "FROM frete f " +
                      "JOIN cliente r ON r.id = f.id_remetente " +
                      "JOIN cliente d ON d.id = f.id_destinatario " +
@@ -165,7 +165,7 @@ public class FreteDAO {
                     f.setStatus(FreteStatus.valueOf(rs.getString("status")));
                     f.setDataEmissao(rs.getDate("data_emissao").toLocalDate());
                     f.setDataPrevisaoEntrega(rs.getDate("data_previsao_entrega").toLocalDate());
-                    f.setMunicipioDestino(rs.getString("municipio_destino"));
+                    f.setCidadeDestino(rs.getString("cidade_destino"));
                     f.setUfDestino(rs.getString("uf_destino"));
 
                     Cliente r = new Cliente(); r.setRazaoSocial(rs.getString("r_razao"));
@@ -214,7 +214,7 @@ public class FreteDAO {
 List<Frete> fretes = new ArrayList<>();
 String sql = "SELECT f.id, f.numero, f.status, f.data_emissao, f.data_previsao_entrega, " +
 "r.razao_social r_razao, d.razao_social d_razao, " +
-"m.nome m_nome, v.placa v_placa, f.municipio_destino, f.uf_destino " +
+"m.nome m_nome, v.placa v_placa, f.cidade_destino, f.uf_destino " +
 "FROM frete f " +
 "JOIN cliente r ON r.id = f.id_remetente " +
 "JOIN cliente d ON d.id = f.id_destinatario " +
@@ -247,7 +247,7 @@ f.setNumero(rs.getString("numero"));
 f.setStatus(br.com.sistema_frete.enums.frete.FreteStatus.valueOf(rs.getString("status")));
 f.setDataEmissao(rs.getDate("data_emissao").toLocalDate());
 f.setDataPrevisaoEntrega(rs.getDate("data_previsao_entrega").toLocalDate());
-f.setMunicipioDestino(rs.getString("municipio_destino"));
+f.setCidadeDestino(rs.getString("cidade_destino"));
 f.setUfDestino(rs.getString("uf_destino"));
 
 Cliente r = new Cliente(); r.setRazaoSocial(rs.getString("r_razao"));
@@ -309,9 +309,9 @@ throw new RuntimeException("Erro ao contar fretes do cliente.", e);
         f.setId(rs.getInt("id"));
         f.setNumero(rs.getString("numero"));
         f.setStatus(FreteStatus.valueOf(rs.getString("status")));
-        f.setMunicipioOrigem(rs.getString("municipio_origem"));
+        f.setCidadeOrigem(rs.getString("cidade_origem"));
         f.setUfOrigem(rs.getString("uf_origem"));
-        f.setMunicipioDestino(rs.getString("municipio_destino"));
+        f.setCidadeDestino(rs.getString("cidade_destino"));
         f.setUfDestino(rs.getString("uf_destino"));
         f.setDescricaoCarga(rs.getString("descricao_carga"));
         f.setPesoKg(rs.getBigDecimal("peso_kg"));

@@ -7,69 +7,6 @@
     <meta charset="UTF-8">
     <title>Criar Conta - Sistema de Fretes</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
-    <style>
-        body {
-            background:
-                linear-gradient(rgba(6,20,50,.15), rgba(6,20,50,.30)),
-                url('${pageContext.request.contextPath}/assets/images/OptimusPrimeNoPrime.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 40px 16px;
-        }
-
-        .cadastro-box {
-            background: rgba(255,255,255,0.97);
-            backdrop-filter: blur(10px);
-            border-radius: 18px;
-            padding: 40px 48px;
-            width: 680px;
-            max-width: 98vw;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-        }
-
-        .cadastro-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 32px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--primary-light);
-        }
-
-        .cadastro-header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 0;
-        }
-
-        .cadastro-header p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin: 4px 0 0;
-        }
-
-        .ja-tem-conta {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .ja-tem-conta a {
-            color: var(--primary);
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .ja-tem-conta a:hover { text-decoration: underline; }
-    </style>
     <script>
         function aplicarMascaraCNPJ(c) {
             let v = c.value.replace(/\D/g,"");
@@ -93,7 +30,7 @@
         }
     </script>
 </head>
-<body>
+<body class="body-cadastro-publico">
 
 <div class="cadastro-box">
 
@@ -149,7 +86,7 @@
             <div class="form-section-title">Endereço</div>
             <div class="form-grid">
                 <div class="form-group col-full">
-                    <label>Logradouro</label>
+                    <label>Endereço</label>
                     <input type="text" name="logradouro"
                            value="${not empty logradouro ? logradouro : ''}" />
                 </div>
@@ -169,15 +106,44 @@
                            value="${not empty bairro ? bairro : ''}" />
                 </div>
                 <div class="form-group">
-                    <label>Cidade</label>
-                    <input type="text" name="municipio"
-                           value="${not empty municipio ? municipio : ''}" />
+					<label>Cidade</label>
+					<input type="text" name="cidade"
+					       value="${not empty cidade ? cidade : ''}" />
                 </div>
-                <div class="form-group">
-                    <label>UF</label>
-                    <input type="text" name="uf" maxlength="2"
-                           value="${not empty uf ? uf : ''}" />
-                </div>
+				
+				<div class="form-group">
+				    <label>UF</label>
+				    <select name="uf" required>
+				        <option value="">Selecione</option>
+				        <option value="AC" ${uf == 'AC' ? 'selected' : ''}>AC - Acre</option>
+				        <option value="AL" ${uf == 'AL' ? 'selected' : ''}>AL - Alagoas</option>
+				        <option value="AP" ${uf == 'AP' ? 'selected' : ''}>AP - Amapá</option>
+				        <option value="AM" ${uf == 'AM' ? 'selected' : ''}>AM - Amazonas</option>
+				        <option value="BA" ${uf == 'BA' ? 'selected' : ''}>BA - Bahia</option>
+				        <option value="CE" ${uf == 'CE' ? 'selected' : ''}>CE - Ceará</option>
+				        <option value="DF" ${uf == 'DF' ? 'selected' : ''}>DF - Distrito Federal</option>
+				        <option value="ES" ${uf == 'ES' ? 'selected' : ''}>ES - Espírito Santo</option>
+				        <option value="GO" ${uf == 'GO' ? 'selected' : ''}>GO - Goiás</option>
+				        <option value="MA" ${uf == 'MA' ? 'selected' : ''}>MA - Maranhão</option>
+				        <option value="MT" ${uf == 'MT' ? 'selected' : ''}>MT - Mato Grosso</option>
+				        <option value="MS" ${uf == 'MS' ? 'selected' : ''}>MS - Mato Grosso do Sul</option>
+				        <option value="MG" ${uf == 'MG' ? 'selected' : ''}>MG - Minas Gerais</option>
+				        <option value="PA" ${uf == 'PA' ? 'selected' : ''}>PA - Pará</option>
+				        <option value="PB" ${uf == 'PB' ? 'selected' : ''}>PB - Paraíba</option>
+				        <option value="PR" ${uf == 'PR' ? 'selected' : ''}>PR - Paraná</option>
+				        <option value="PE" ${uf == 'PE' ? 'selected' : ''}>PE - Pernambuco</option>
+				        <option value="PI" ${uf == 'PI' ? 'selected' : ''}>PI - Piauí</option>
+				        <option value="RJ" ${uf == 'RJ' ? 'selected' : ''}>RJ - Rio de Janeiro</option>
+				        <option value="RN" ${uf == 'RN' ? 'selected' : ''}>RN - Rio Grande do Norte</option>
+				        <option value="RS" ${uf == 'RS' ? 'selected' : ''}>RS - Rio Grande do Sul</option>
+				        <option value="RO" ${uf == 'RO' ? 'selected' : ''}>RO - Rondônia</option>
+				        <option value="RR" ${uf == 'RR' ? 'selected' : ''}>RR - Roraima</option>
+				        <option value="SC" ${uf == 'SC' ? 'selected' : ''}>SC - Santa Catarina</option>
+				        <option value="SP" ${uf == 'SP' ? 'selected' : ''}>SP - São Paulo</option>
+				        <option value="SE" ${uf == 'SE' ? 'selected' : ''}>SE - Sergipe</option>
+				        <option value="TO" ${uf == 'TO' ? 'selected' : ''}>TO - Tocantins</option>
+				    </select>
+				</div>
                 <div class="form-group">
                     <label>CEP</label>
                     <input type="text" name="cep"

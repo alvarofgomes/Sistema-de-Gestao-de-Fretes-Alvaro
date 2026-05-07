@@ -639,6 +639,74 @@ body {
 }
 
 /* ═══════════════════════════════════════════════
+   CADASTRO PÚBLICO
+   ═══════════════════════════════════════════════ */
+
+body.body-cadastro-publico {
+    background:
+        linear-gradient(rgba(6,20,50,.15), rgba(6,20,50,.30)),
+        url("../images/OptimusPrimeNoPrime.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+}
+
+.cadastro-box {
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 40px 48px;
+    width: 680px;
+    max-width: 98vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.cadastro-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+.cadastro-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+}
+
+.cadastro-header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 4px 0 0;
+}
+
+.ja-tem-conta {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.ja-tem-conta a {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.ja-tem-conta a:hover {
+    text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════
    RESPONSIVO
    ═══════════════════════════════════════════════ */
 @media (max-width: 900px) {

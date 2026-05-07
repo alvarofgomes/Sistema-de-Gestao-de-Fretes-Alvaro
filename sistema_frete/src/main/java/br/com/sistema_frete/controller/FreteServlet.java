@@ -206,9 +206,9 @@ public class FreteServlet extends HttpServlet {
         vei.setId(parseIntegerOrNull(req.getParameter("idVeiculo")));
         frete.setVeiculo(vei);
 
-        frete.setMunicipioOrigem(req.getParameter("municipioOrigem"));
+        frete.setCidadeOrigem(req.getParameter("cidadeOrigem"));
         frete.setUfOrigem(req.getParameter("ufOrigem"));
-        frete.setMunicipioDestino(req.getParameter("municipioDestino"));
+        frete.setCidadeDestino(req.getParameter("cidadeDestino"));
         frete.setUfDestino(req.getParameter("ufDestino"));
         frete.setDescricaoCarga(req.getParameter("descricaoCarga"));
         frete.setPesoKg(parseBigDecimalOrNull(req.getParameter("pesoKg")));

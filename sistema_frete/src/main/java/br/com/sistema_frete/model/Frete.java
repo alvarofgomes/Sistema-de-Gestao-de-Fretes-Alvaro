@@ -14,9 +14,9 @@ public class Frete {
 	private Cliente destinatario;
 	private Motorista motorista;
 	private Veiculo veiculo;
-	private String municipioOrigem;
+	private String cidadeoOrigem;
 	private String ufOrigem;
-	private String municipioDestino;
+	private String cidadeDestino;
 	private String ufDestino;
 	private String descricaoCarga;
 	private BigDecimal pesoKg;
@@ -38,7 +38,7 @@ public class Frete {
 	
 	
 	public Frete(Integer id, String numero, Cliente remetente, Cliente destinatario, Motorista motorista,
-			Veiculo veiculo, String municipioOrigem, String ufOrigem, String municipioDestino, String ufDestino,
+			Veiculo veiculo, String cidadeoOrigem, String ufOrigem, String cidadeDestino, String ufDestino,
 			String descricaoCarga, BigDecimal pesoKg, Integer volumes, BigDecimal valorFrete, BigDecimal aliquotaIcms,
 			BigDecimal valorIcms, BigDecimal valorTotal, FreteStatus status, LocalDate dataEmissao,
 			LocalDate dataPrevisaoEntrega, LocalDateTime dataSaida, LocalDateTime dataEntrega) {
@@ -48,9 +48,9 @@ public class Frete {
 		this.destinatario = destinatario;
 		this.motorista = motorista;
 		this.veiculo = veiculo;
-		this.municipioOrigem = municipioOrigem;
+		this.cidadeoOrigem = cidadeoOrigem;
 		this.ufOrigem = ufOrigem;
-		this.municipioDestino = municipioDestino;
+		this.cidadeDestino = cidadeDestino;
 		this.ufDestino = ufDestino;
 		this.descricaoCarga = descricaoCarga;
 		this.pesoKg = pesoKg;
@@ -114,12 +114,12 @@ public class Frete {
 		this.veiculo = veiculo;
 	}
 
-	public String getMunicipioOrigem() {
-		return municipioOrigem;
+	public String getCidadeOrigem() {
+		return cidadeoOrigem;
 	}
 
-	public void setMunicipioOrigem(String municipioOrigem) {
-		this.municipioOrigem = municipioOrigem;
+	public void setCidadeOrigem(String cidadeOrigem) {
+		this.cidadeoOrigem = cidadeOrigem;
 	}
 
 	public String getUfOrigem() {
@@ -130,12 +130,12 @@ public class Frete {
 		this.ufOrigem = ufOrigem;
 	}
 
-	public String getMunicipioDestino() {
-		return municipioDestino;
+	public String getCidadeDestino() {
+		return cidadeDestino;
 	}
 
-	public void setMunicipioDestino(String municipioDestino) {
-		this.municipioDestino = municipioDestino;
+	public void setCidadeDestino(String cidadeDestino) {
+		this.cidadeDestino = cidadeDestino;
 	}
 
 	public String getUfDestino() {

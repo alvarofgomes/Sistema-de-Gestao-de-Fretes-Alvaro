@@ -198,7 +198,6 @@
 		    </div>
 		</c:if>
 		
-		<%-- Se já tem usuário, apenas informa --%>
 		<c:if test="${cliente.id != null && possuiUsuario}">
 		    <div class="form-section">
 		        <div class="form-section-title">Acesso ao Portal</div>
