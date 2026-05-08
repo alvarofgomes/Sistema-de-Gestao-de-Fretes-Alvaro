@@ -9,7 +9,7 @@ public class Ocorrencia {
 	private Integer idFrete;
 	private TipoOcorrencia tipo;
 	private LocalDateTime dataHora;
-	private String municipio;
+	private String cidade;
 	private String uf;
 	private String descricao;
 	private String nomeRecebedor;
@@ -50,12 +50,12 @@ public class Ocorrencia {
 		this.dataHora = dataHora;
 	}
 
-	public String getMunicipio() {
-		return municipio;
+	public String getCidade() {
+		return cidade;
 	}
 
-	public void setMunicipio(String municipio) {
-		this.municipio = municipio;
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
 	}
 
 	public String getUf() {

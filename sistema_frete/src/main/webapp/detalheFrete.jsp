@@ -77,8 +77,8 @@
                 <th>Veículo</th><td>${frete.veiculo.placa}</td>
             </tr>
             <tr>
-                <th>Origem</th><td>${frete.municipioOrigem}/${frete.ufOrigem}</td>
-                <th>Destino</th><td>${frete.municipioDestino}/${frete.ufDestino}</td>
+                <th>Origem</th><td>${frete.cidadeOrigem}/${frete.ufOrigem}</td>
+                <th>Destino</th><td>${frete.cidadeDestino}/${frete.ufDestino}</td>
             </tr>
             <tr>
                 <th>Emissão</th><td>${frete.dataEmissao}</td>
@@ -133,7 +133,7 @@
                                 <tr>
                                     <td>${oc.dataHora}</td>
                                     <td><span class="badge status-info">${oc.tipo}</span></td>
-                                    <td>${oc.municipio}/${oc.uf}</td>
+                                    <td>${oc.cidade}/${oc.uf}</td>
                                     <td>${not empty oc.descricao ? oc.descricao : '—'}</td>
                                     <td>${not empty oc.nomeRecebedor ? oc.nomeRecebedor : '—'}</td>
                                     <td>${not empty oc.documentoRecebedor ? oc.documentoRecebedor : '—'}</td>
@@ -176,8 +176,8 @@
                         <input type="datetime-local" name="dataHora" />
                     </div>
                     <div class="form-group">
-                        <label>Município *</label>
-                        <input type="text" name="municipio" />
+                        <label>Cidade *</label>
+                        <input type="text" name="cidade" />
                     </div>
                     <div class="form-group">
                         <label>UF *</label>

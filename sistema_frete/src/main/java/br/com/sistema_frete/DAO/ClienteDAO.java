@@ -197,10 +197,13 @@ public class ClienteDAO {
     }
 
     private void inserir(Cliente cliente) {
+    	
         String sql = "INSERT INTO cliente " +
                      "(razao_social, nome_fantasia, cnpj, inscricao_estadual, logradouro, " +
                      "numero, complemento, bairro, cidade, uf, cep, telefone, email, status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        System.out.println("sql cliente: " + sql); // Debug: Verificar a consulta SQL
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

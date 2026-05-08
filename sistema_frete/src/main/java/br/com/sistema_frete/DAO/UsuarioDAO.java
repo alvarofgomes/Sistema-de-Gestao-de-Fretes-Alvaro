@@ -125,6 +125,8 @@ public class UsuarioDAO {
         String sql = "INSERT INTO usuario (nome, login, senha, perfil, status, cliente_id) " +
                      "VALUES (?, ?, ?, ?, ?, ?)";
 
+        System.out.println("sql usuario" + sql); // Debug: Verificar a consulta SQL
+        
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             preencherPs(usuario, ps);

@@ -30,6 +30,10 @@ public class CadastroPublicoServlet extends HttpServlet {
         try {
             // dados da empresa (cliente)
             Cliente cliente = new Cliente();
+            
+            req.setCharacterEncoding("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
+            
             cliente.setRazaoSocial(req.getParameter("razaoSocial"));
             cliente.setNomeFantasia(req.getParameter("nomeFantasia"));
             cliente.setCnpj(req.getParameter("cnpj"));

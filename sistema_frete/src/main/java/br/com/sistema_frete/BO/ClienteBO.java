@@ -101,7 +101,10 @@ public class ClienteBO {
                     throw new CadastroException("Já existe cliente cadastrado com este CNPJ.");
                 }
             }
-
+            
+            System.out.println("Salvo com sucesso: " + cliente.getRazaoSocial() + " - CNPJ: " + cliente.getCnpj() + " - ID: "
+            + cliente.getId() + " - nome fantasia: " + cliente.getNomeFantasia() + " - status: " + cliente.getStatus());	
+            
             clienteDAO.salvar(cliente);
 
         } catch (CadastroException e) {

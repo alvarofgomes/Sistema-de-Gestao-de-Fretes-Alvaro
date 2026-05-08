@@ -43,7 +43,7 @@ public class OcorrenciaServlet extends HttpServlet {
                 ocorrencia.setDataHora(LocalDateTime.parse(dataHora));
             }
 
-            ocorrencia.setMunicipio(req.getParameter("municipio"));
+            ocorrencia.setCidade(req.getParameter("cidade"));
             ocorrencia.setUf(req.getParameter("uf"));
             ocorrencia.setDescricao(req.getParameter("descricao"));
             ocorrencia.setNomeRecebedor(req.getParameter("nomeRecebedor"));

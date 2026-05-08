@@ -77,6 +77,8 @@ public class FreteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+    	//não precisa do tratamento de ecoding
+    	
         Frete frete = new Frete();
         try {
             preencherFrete(req, frete);

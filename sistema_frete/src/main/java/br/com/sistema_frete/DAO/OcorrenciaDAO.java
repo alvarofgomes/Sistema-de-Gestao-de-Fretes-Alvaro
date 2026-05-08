@@ -12,14 +12,14 @@ public class OcorrenciaDAO {
 
     public void inserir(Ocorrencia ocorrencia, Connection conn) throws SQLException {
         String sql = "INSERT INTO ocorrencia_frete " +
-                     "(id_frete, tipo, data_hora, municipio, uf, descricao, nome_recebedor, documento_recebedor) " +
+                     "(id_frete, tipo, data_hora, cidade, uf, descricao, nome_recebedor, documento_recebedor) " +
                      "VALUES (?,?,?,?,?,?,?,?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ocorrencia.getIdFrete());
             ps.setString(2, ocorrencia.getTipo().name());
             ps.setTimestamp(3, Timestamp.valueOf(ocorrencia.getDataHora()));
-            ps.setString(4, ocorrencia.getMunicipio());
+            ps.setString(4, ocorrencia.getCidade());
             ps.setString(5, ocorrencia.getUf());
             ps.setString(6, ocorrencia.getDescricao());
             ps.setString(7, ocorrencia.getNomeRecebedor());
@@ -44,7 +44,7 @@ public class OcorrenciaDAO {
                     o.setIdFrete(rs.getInt("id_frete"));
                     o.setTipo(TipoOcorrencia.valueOf(rs.getString("tipo")));
                     o.setDataHora(rs.getTimestamp("data_hora").toLocalDateTime());
-                    o.setMunicipio(rs.getString("municipio"));
+                    o.setCidade(rs.getString("cidade"));
                     o.setUf(rs.getString("uf"));
                     o.setDescricao(rs.getString("descricao"));
                     o.setNomeRecebedor(rs.getString("nome_recebedor"));
@@ -71,7 +71,7 @@ public class OcorrenciaDAO {
                     o.setIdFrete(rs.getInt("id_frete"));
                     o.setTipo(TipoOcorrencia.valueOf(rs.getString("tipo")));
                     o.setDataHora(rs.getTimestamp("data_hora").toLocalDateTime());
-                    o.setMunicipio(rs.getString("municipio"));
+                    o.setCidade(rs.getString("cidade"));
                     o.setUf(rs.getString("uf"));
                     return o;
                 }

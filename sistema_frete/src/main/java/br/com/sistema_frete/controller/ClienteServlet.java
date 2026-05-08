@@ -28,60 +28,63 @@ public class ClienteServlet extends HttpServlet {
     private final ClienteBO clienteBO = new ClienteBO();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String acao = request.getParameter("acao");
+        String acao = req.getParameter("acao");
 
         try {
             if ("novo".equalsIgnoreCase(acao)) {
-                request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
+            	req.getRequestDispatcher("/formCliente.jsp").forward(req, resp);
                 return;
             }
 
             if ("editar".equalsIgnoreCase(acao)) {
-                editar(request, response);
+                editar(req, resp);
                 return;
             }
 
             if ("excluir".equalsIgnoreCase(acao)) {
-                excluir(request, response);
+                excluir(req, resp);
                 return;
             }
 
-            listar(request, response);
+            listar(req, resp);
 
         } catch (CadastroException e) {
-            request.setAttribute("mensagemErro", e.getMessage());
-            request.setAttribute("voltarUrl", request.getContextPath() + "/clientes");
-            request.getRequestDispatcher("/erro.jsp").forward(request, response);
+        	req.setAttribute("mensagemErro", e.getMessage());
+        	req.setAttribute("voltarUrl", req.getContextPath() + "/clientes");
+        	req.getRequestDispatcher("/erro.jsp").forward(req, resp);
         } catch (NegocioException e) {
-            request.setAttribute("mensagemErro", e.getMessage());
-            request.setAttribute("voltarUrl", request.getContextPath() + "/clientes");
-            request.getRequestDispatcher("/erro.jsp").forward(request, response);
+        	req.setAttribute("mensagemErro", e.getMessage());
+        	req.setAttribute("voltarUrl", req.getContextPath() + "/clientes");
+        	req.getRequestDispatcher("/erro.jsp").forward(req, resp);
         } catch (Exception e) {
             System.err.println("Erro inesperado no ClienteServlet:");
             e.printStackTrace();
 
-            request.setAttribute("mensagemErro", "Ocorreu um erro inesperado ao processar clientes.");
-            request.setAttribute("voltarUrl", request.getContextPath() + "/clientes");
-            request.getRequestDispatcher("/erro.jsp").forward(request, response);
+            req.setAttribute("mensagemErro", "Ocorreu um erro inesperado ao processar clientes.");
+            req.setAttribute("voltarUrl", req.getContextPath() + "/clientes");
+            req.getRequestDispatcher("/erro.jsp").forward(req, resp);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
         Cliente cliente = new Cliente();
 
         try {
-            preencherClienteComParametros(request, cliente);
+            preencherClienteComParametros(req, cliente);
             clienteBO.salvar(cliente);
 
+            req.setCharacterEncoding("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
+            
             //ADICIONAR: criar login se foi preenchido
-            String loginNovo = request.getParameter("loginNovo");
-            String senhaNova = request.getParameter("senhaNova");
+            String loginNovo = req.getParameter("loginNovo");
+            String senhaNova = req.getParameter("senhaNova");
 
             if (loginNovo != null && !loginNovo.trim().isEmpty()
                     && senhaNova != null && !senhaNova.trim().isEmpty()) {
@@ -92,7 +95,7 @@ public class ClienteServlet extends HttpServlet {
 
                 if (clienteSalvo != null) {
                     Usuario usuario = new Usuario();
-                    usuario.setNome(request.getParameter("nomeResponsavel"));
+                    usuario.setNome(req.getParameter("nomeResponsavel"));
                     usuario.setLogin(loginNovo.trim());
                     usuario.setPerfil(PerfilUsuario.CLIENTE);
                     usuario.setStatus(StatusUsuario.ATIVO);
@@ -103,56 +106,56 @@ public class ClienteServlet extends HttpServlet {
                 }
             }
 
-            request.getSession().setAttribute("sucesso",
+            req.getSession().setAttribute("sucesso",
                     cliente.getId() != null
                             ? "Cliente atualizado com sucesso."
                             : "Cliente cadastrado com sucesso.");
 
             StringBuilder redirect = new StringBuilder(
-                    request.getContextPath() + "/clientes");
-            String filtroRetorno = request.getParameter("filtroRetorno");
-            String paginaRetorno = request.getParameter("paginaRetorno");
-            String regPorPagina  = request.getParameter("registrosPorPaginaRetorno");
+            		req.getContextPath() + "/clientes");
+            String filtroRetorno = req.getParameter("filtroRetorno");
+            String paginaRetorno = req.getParameter("paginaRetorno");
+            String regPorPagina  = req.getParameter("registrosPorPaginaRetorno");
 
             redirect.append("?filtro=").append(filtroRetorno != null ? filtroRetorno : "");
             redirect.append("&pagina=").append(paginaRetorno != null && !paginaRetorno.isEmpty() ? paginaRetorno : "1");
             redirect.append("&registrosPorPagina=").append(regPorPagina != null && !regPorPagina.isEmpty() ? regPorPagina : "10");
 
-            response.sendRedirect(redirect.toString());
+            resp.sendRedirect(redirect.toString());
 
         } catch (CadastroException e) {
-            request.setAttribute("erro", e.getMessage());
-            request.setAttribute("cliente", cliente);
+        	req.setAttribute("erro", e.getMessage());
+        	req.setAttribute("cliente", cliente);
 
             // recarrega possuiUsuario para o form não perder o estado
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             if (cliente.getId() != null) {
-                request.setAttribute("possuiUsuario",
+            	req.setAttribute("possuiUsuario",
                         usuarioDAO.clientePossuiUsuario(cliente.getId()));
             }
 
-            request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
+            req.getRequestDispatcher("/formCliente.jsp").forward(req, resp);
 
         } catch (NegocioException e) {
-            request.setAttribute("mensagemErro", e.getMessage());
-            request.setAttribute("voltarUrl", request.getContextPath() + "/clientes");
-            request.getRequestDispatcher("/erro.jsp").forward(request, response);
+        	req.setAttribute("mensagemErro", e.getMessage());
+        	req.setAttribute("voltarUrl", req.getContextPath() + "/clientes");
+        	req.getRequestDispatcher("/erro.jsp").forward(req, resp);
 
         } catch (Exception e) {
             System.err.println("Erro inesperado ao salvar cliente:");
             e.printStackTrace();
-            request.setAttribute("mensagemErro", "Ocorreu um erro inesperado ao salvar o cliente.");
-            request.setAttribute("voltarUrl", request.getContextPath() + "/clientes");
-            request.getRequestDispatcher("/erro.jsp").forward(request, response);
+            req.setAttribute("mensagemErro", "Ocorreu um erro inesperado ao salvar o cliente.");
+            req.setAttribute("voltarUrl", req.getContextPath() + "/clientes");
+            req.getRequestDispatcher("/erro.jsp").forward(req, resp);
         }
     }
 
-    private void listar(HttpServletRequest request, HttpServletResponse response)
+    private void listar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException, NegocioException {
 
-        String filtro = request.getParameter("filtro");
-        int paginaAtual = parseIntOrDefault(request.getParameter("pagina"), 1);
-        int registrosPorPagina = parseIntOrDefault(request.getParameter("registrosPorPagina"), 10);
+        String filtro = req.getParameter("filtro");
+        int paginaAtual = parseIntOrDefault(req.getParameter("pagina"), 1);
+        int registrosPorPagina = parseIntOrDefault(req.getParameter("registrosPorPagina"), 10);
 
         if (paginaAtual < 1) {
             paginaAtual = 1;
@@ -175,76 +178,76 @@ public class ClienteServlet extends HttpServlet {
 
         List<Cliente> listaClientes = clienteBO.listarComPaginacao(filtro, paginaAtual, registrosPorPagina);
 
-        request.setAttribute("listaClientes", listaClientes);
-        request.setAttribute("paginaAtual", paginaAtual);
-        request.setAttribute("totalPaginas", totalPaginas);
-        request.setAttribute("filtro", filtro);
-        request.setAttribute("registrosPorPagina", registrosPorPagina);
+        req.setAttribute("listaClientes", listaClientes);
+        req.setAttribute("paginaAtual", paginaAtual);
+        req.setAttribute("totalPaginas", totalPaginas);
+        req.setAttribute("filtro", filtro);
+        req.setAttribute("registrosPorPagina", registrosPorPagina);
 
-        String sucesso = (String) request.getSession().getAttribute("sucesso");
+        String sucesso = (String) req.getSession().getAttribute("sucesso");
         if (sucesso != null) {
-            request.setAttribute("sucesso", sucesso);
-            request.getSession().removeAttribute("sucesso");
+        	req.setAttribute("sucesso", sucesso);
+        	req.getSession().removeAttribute("sucesso");
         }
         
-        request.getRequestDispatcher("/listaClientes.jsp").forward(request, response);
+        req.getRequestDispatcher("/listaClientes.jsp").forward(req, resp);
     }
 
-    private void editar(HttpServletRequest request, HttpServletResponse response)
+    private void editar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException, NegocioException {
 
-        Integer id = parseIntegerOrNull(request.getParameter("id"));
+        Integer id = parseIntegerOrNull(req.getParameter("id"));
 
         if (id == null) {
             throw new NegocioException("ID do cliente não informado.");
         }
 
         Cliente cliente = clienteBO.buscarPorId(id);
-        request.setAttribute("cliente", cliente);
+        req.setAttribute("cliente", cliente);
 
         //verifica se já tem usuário vinculado
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         boolean possuiUsuario = usuarioDAO.clientePossuiUsuario(id);
-        request.setAttribute("possuiUsuario", possuiUsuario);
+        req.setAttribute("possuiUsuario", possuiUsuario);
 
-        request.setAttribute("filtro", request.getParameter("filtro"));
-        request.setAttribute("paginaAtual", request.getParameter("pagina"));
-        request.setAttribute("registrosPorPagina", request.getParameter("registrosPorPagina"));
+        req.setAttribute("filtro", req.getParameter("filtro"));
+        req.setAttribute("paginaAtual", req.getParameter("pagina"));
+        req.setAttribute("registrosPorPagina", req.getParameter("registrosPorPagina"));
 
-        request.getRequestDispatcher("/formCliente.jsp").forward(request, response);
+        req.getRequestDispatcher("/formCliente.jsp").forward(req, resp);
     }
 
-    private void excluir(HttpServletRequest request, HttpServletResponse response)
+    private void excluir(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, NegocioException {
 
-        Long id = parseLongOrNull(request.getParameter("id"));
+        Long id = parseLongOrNull(req.getParameter("id"));
 
         if (id == null) {
             throw new NegocioException("ID do cliente não informado.");
         }
 
         clienteBO.excluir(id);
-        request.getSession().setAttribute("sucesso", "Cliente excluído com sucesso.");
-        response.sendRedirect(request.getContextPath() + "/clientes");
+        req.getSession().setAttribute("sucesso", "Cliente excluído com sucesso.");
+        resp.sendRedirect(req.getContextPath() + "/clientes");
     }
 
-    private void preencherClienteComParametros(HttpServletRequest request, Cliente cliente) {
-        cliente.setId(parseIntegerOrNull(request.getParameter("id")));
-        cliente.setRazaoSocial(request.getParameter("razaoSocial"));
-        cliente.setNomeFantasia(request.getParameter("nomeFantasia"));
-        cliente.setCnpj(request.getParameter("cnpj"));
-        cliente.setInscricaoEstadual(request.getParameter("inscricaoEstadual"));
-        cliente.setLogradouro(request.getParameter("logradouro"));
-        cliente.setNumero(request.getParameter("numero"));
-        cliente.setComplemento(request.getParameter("complemento"));
-        cliente.setBairro(request.getParameter("bairro"));
-        cliente.setCidade(request.getParameter("cidade"));
-        cliente.setUf(request.getParameter("uf"));
-        cliente.setCep(request.getParameter("cep"));
-        cliente.setTelefone(request.getParameter("telefone"));
-        cliente.setEmail(request.getParameter("email"));
+    private void preencherClienteComParametros(HttpServletRequest req, Cliente cliente) {
+        cliente.setId(parseIntegerOrNull(req.getParameter("id")));
+        cliente.setRazaoSocial(req.getParameter("razaoSocial"));
+        cliente.setNomeFantasia(req.getParameter("nomeFantasia"));
+        cliente.setCnpj(req.getParameter("cnpj"));
+        cliente.setInscricaoEstadual(req.getParameter("inscricaoEstadual"));
+        cliente.setLogradouro(req.getParameter("logradouro"));
+        cliente.setNumero(req.getParameter("numero"));
+        cliente.setComplemento(req.getParameter("complemento"));
+        cliente.setBairro(req.getParameter("bairro"));
+        cliente.setCidade(req.getParameter("cidade"));
+        cliente.setUf(req.getParameter("uf"));
+        cliente.setCep(req.getParameter("cep"));
+        cliente.setTelefone(req.getParameter("telefone"));
+        cliente.setEmail(req.getParameter("email"));
 
-        String status = request.getParameter("status");
+        String status = req.getParameter("status");
         if (status != null && !status.trim().isEmpty()) {
             cliente.setStatus(StatusCliente.valueOf(status));
         }
