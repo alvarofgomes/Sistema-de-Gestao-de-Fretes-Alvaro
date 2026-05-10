@@ -23,14 +23,6 @@
 
 O **Sistema de Gestão de Fretes** foi desenvolvido para atender às necessidades operacionais de pequenas e médias transportadoras, centralizando o controle de todo o ciclo logístico — desde o cadastro de clientes, motoristas e veículos até a emissão, rastreamento e entrega de fretes.
 
-**Problema resolvido:**
-
-Transportadoras que dependem de planilhas e processos manuais enfrentam dificuldades no controle de status de fretes, na comunicação com clientes e na geração de relatórios operacionais. Este sistema digitaliza e automatiza esse fluxo de ponta a ponta.
-
-**Contexto:**
-
-Projeto avaliativo desenvolvido como trabalho de conclusão de curso técnico/graduação na área de Desenvolvimento de Sistemas, simulando um sistema real de gestão logística.
-
 ---
 
 ## 🛠️ Tecnologias Utilizadas
@@ -340,7 +332,7 @@ sistema-gestao-fretes/
 
 ## 🗄️ Banco de Dados
 
-O sistema utiliza **PostgreSQL** como banco de dados relacional. O script SQL completo está disponível em `sql/schema.sql`.
+O sistema utiliza **PostgreSQL** como banco de dados relacional.
 
 ### Tabelas principais
 
