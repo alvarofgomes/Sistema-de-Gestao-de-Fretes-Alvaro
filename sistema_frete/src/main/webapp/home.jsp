@@ -85,6 +85,12 @@
 		    <h2>Relatórios</h2>
 		    <p>Fretes em aberto, romaneio de carga e extrato por cliente.</p>
 		</a>
+		
+		<a href="${pageContext.request.contextPath}/solicitacoes-frete" class="card-home">
+		    <h2>Solicitações</h2>
+		    <p>Analise e gerencie solicitações de frete enviadas pelos clientes.</p>
+		</a>
+		
     </div>
 
 </div>

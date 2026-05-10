@@ -66,6 +66,10 @@ function calcularValores() {
 
     <form action="${pageContext.request.contextPath}/fretes" method="post" class="form-cadastro">
 
+		    <c:if test="${not empty solicitacaoId}">
+		        <input type="hidden" name="solicitacaoId" value="${solicitacaoId}" />
+		    </c:if>
+
         <h3>Partes Envolvidas</h3>
 
         <label for="idRemetente">Remetente:</label>
@@ -118,9 +122,9 @@ function calcularValores() {
 
         <h3>Origem e Destino</h3>
 
-        <label for="municipioOrigem">Cidade de Origem:</label>
-        <input type="text" id="municipioOrigem" name="municipioOrigem" class="form-control"
-               value="${frete != null ? frete.municipioOrigem : ''}" />
+        <label for="cidadeOrigem">Cidade de Origem:</label>
+        <input type="text" id="cidadeOrigem" name="cidadeOrigem" class="form-control"
+               value="${frete != null ? frete.cidadeOrigem : ''}" />
 
         <label for="ufOrigem">UF de Origem:</label>
         <select id="ufOrigem" name="ufOrigem" class="form-control">
@@ -154,9 +158,9 @@ function calcularValores() {
             <option value="TO" ${frete != null && frete.ufOrigem == 'TO' ? 'selected' : ''}>TO - Tocantins</option>
         </select>
 
-        <label for="municipioDestino">Cidade de Destino:</label>
-        <input type="text" id="municipioDestino" name="municipioDestino" class="form-control"
-               value="${frete != null ? frete.municipioDestino : ''}" />
+        <label for="cidadeDestino">Cidade de Destino:</label>
+        <input type="text" id="cidadeDestino" name="cidadeDestino" class="form-control"
+               value="${frete != null ? frete.cidadeDestino : ''}" />
 
         <label for="ufDestino">UF de Destino:</label>
         <select id="ufDestino" name="ufDestino" class="form-control">

@@ -163,7 +163,7 @@
         </div>
 
 		<%-- SEÇÃO DE ACESSO — aparece só na edição e só se não tiver usuário --%>
-		<c:if test="${cliente.id != null && !possuiUsuario}">
+		<c:if test="${!possuiUsuario}">
 		    <div class="form-section">
 		        <div class="form-section-title" style="color: var(--accent);">
 		            Criar Acesso ao Portal do Cliente
@@ -198,7 +198,7 @@
 		    </div>
 		</c:if>
 		
-		<c:if test="${cliente.id != null && possuiUsuario}">
+		<c:if test="${possuiUsuario}">
 		    <div class="form-section">
 		        <div class="form-section-title">Acesso ao Portal</div>
 		        <p style="font-size:13px; color:var(--success); font-weight:600;">

@@ -53,6 +53,14 @@
         <c:if test="${requestScope.paginaAtualMenu ne 'fretes'}">
             <a href="${pageContext.request.contextPath}/fretes">Fretes</a>
         </c:if>
+        
+        <c:if test="${requestScope.paginaAtualMenu ne 'relatorios'}">
+            <a href="${pageContext.request.contextPath}/relatorios">Relatorios</a>
+        </c:if>
+        
+        <c:if test="${requestScope.paginaAtualMenu ne 'solicitacoes'}">
+		    <a href="${pageContext.request.contextPath}/solicitacoes-frete">Solicitações</a>
+		</c:if>
 
         <a href="${pageContext.request.contextPath}/logout" class="sair">Sair</a>
     </nav>
