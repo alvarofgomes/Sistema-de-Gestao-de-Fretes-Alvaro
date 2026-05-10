@@ -11,6 +11,8 @@ import br.com.sistema_frete.model.Cliente;
 import br.com.sistema_frete.model.Frete;
 import br.com.sistema_frete.model.Motorista;
 import br.com.sistema_frete.model.Veiculo;
+import br.com.sistema_frete.BO.SolicitacaoFreteBO;
+import br.com.sistema_frete.model.SolicitacaoFrete;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,6 +32,7 @@ public class FreteServlet extends HttpServlet {
     private final ClienteBO clienteBO = new ClienteBO();
     private final MotoristaBO motoristaBO = new MotoristaBO();
     private final VeiculoBO veiculoBO = new VeiculoBO();
+    private final SolicitacaoFreteBO solicitacaoBO = new SolicitacaoFreteBO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -77,13 +80,29 @@ public class FreteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-    	//não precisa do tratamento de ecoding
-    	
         Frete frete = new Frete();
         try {
             preencherFrete(req, frete);
             freteBO.registrarFrete(frete);
-            req.getSession().setAttribute("sucesso", "Frete " + frete.getNumero() + " registrado com sucesso.");
+
+            // se veio de solicitação, marcar como CONVERTIDA
+            String solicitacaoIdStr = req.getParameter("solicitacaoId");
+            if (solicitacaoIdStr != null && !solicitacaoIdStr.trim().isEmpty()) {
+                try {
+                    Integer solicitacaoId = Integer.parseInt(solicitacaoIdStr);
+                    Integer usuarioId = (Integer) req.getSession()
+                            .getAttribute("usuarioId");
+                    solicitacaoBO.marcarComoConvertida(solicitacaoId, usuarioId);
+                } catch (Exception ex) {
+                    // loga mas não interrompe — o frete já foi salvo
+                    System.err.println(
+                        "Aviso: frete salvo mas solicitação não foi convertida: "
+                        + ex.getMessage());
+                }
+            }
+
+            req.getSession().setAttribute("sucesso",
+                    "Frete " + frete.getNumero() + " registrado com sucesso.");
             resp.sendRedirect(req.getContextPath() + "/fretes");
 
         } catch (FreteException e) {
@@ -138,9 +157,49 @@ public class FreteServlet extends HttpServlet {
 
     private void carregarFormNovo(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException, NegocioException {
-        req.setAttribute("clientes", clienteBO.listarTodos());
+
+        req.setAttribute("clientes",   clienteBO.listarTodos());
         req.setAttribute("motoristas", motoristaBO.listarAtivos());
-        req.setAttribute("veiculos", veiculoBO.listarDisponiveis());
+        req.setAttribute("veiculos",   veiculoBO.listarDisponiveis());
+
+        // verifica se veio de uma solicitação aprovada
+        String solicitacaoIdStr = req.getParameter("solicitacaoId");
+        if (solicitacaoIdStr != null && !solicitacaoIdStr.trim().isEmpty()) {
+            try {
+                Integer solicitacaoId = Integer.parseInt(solicitacaoIdStr);
+                SolicitacaoFrete sol  = solicitacaoBO.buscarPorId(solicitacaoId);
+
+                if (sol.getStatus() !=
+                        br.com.sistema_frete.enums.solicitacao.StatusSolicitacaoFrete.APROVADA) {
+                    req.setAttribute("erro",
+                        "Esta solicitação não está mais disponível para gerar frete.");
+                } else {
+                    // monta frete pré-preenchido com dados da solicitação
+                    Frete frete = new Frete();
+
+                    Cliente remetente = new Cliente();
+                    remetente.setId(sol.getCliente().getId());
+                    frete.setRemetente(remetente);
+
+                    frete.setCidadeOrigem(sol.getCidadeOrigem());
+                    frete.setUfOrigem(sol.getUfOrigem());
+                    frete.setCidadeDestino(sol.getCidadeDestino());
+                    frete.setUfDestino(sol.getUfDestino());
+                    frete.setDescricaoCarga(sol.getDescricaoCarga());
+                    frete.setPesoKg(sol.getPesoKg());
+                    frete.setVolumes(sol.getVolumes());
+
+                    req.setAttribute("frete",         frete);
+                    req.setAttribute("solicitacaoId", solicitacaoId);
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao carregar solicitação para frete:");
+                e.printStackTrace();
+                req.setAttribute("erro",
+                    "Não foi possível carregar os dados da solicitação.");
+            }
+        }
+
         req.getRequestDispatcher("/formFrete.jsp").forward(req, resp);
     }
 

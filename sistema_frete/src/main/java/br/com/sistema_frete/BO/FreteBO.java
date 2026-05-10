@@ -5,6 +5,7 @@ import br.com.sistema_frete.DAO.MotoristaDAO;
 import br.com.sistema_frete.DAO.OcorrenciaDAO;
 import br.com.sistema_frete.DAO.VeiculoDAO;
 import br.com.sistema_frete.enums.frete.FreteStatus;
+import br.com.sistema_frete.enums.ocorrencia.TipoOcorrencia;
 import br.com.sistema_frete.enums.veiculo.StatusVeiculo;
 import br.com.sistema_frete.exception.FreteException;
 import br.com.sistema_frete.exception.NegocioException;
@@ -12,25 +13,27 @@ import br.com.sistema_frete.model.Frete;
 import br.com.sistema_frete.model.Motorista;
 import br.com.sistema_frete.model.Ocorrencia;
 import br.com.sistema_frete.model.Veiculo;
+import br.com.sistema_frete.service.WhatsAppService;
 import br.com.sistema_frete.util.ConnectionFactory;
 import br.com.sistema_frete.util.GeradorNumeroFrete;
-
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
 public class FreteBO {
 
-    private final FreteDAO freteDAO = new FreteDAO();
-    private final VeiculoDAO veiculoDAO = new VeiculoDAO();
-    private final MotoristaDAO motoristaDAO = new MotoristaDAO();
-    private final OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+    private final FreteDAO         freteDAO         = new FreteDAO();
+    private final VeiculoDAO       veiculoDAO       = new VeiculoDAO();
+    private final MotoristaDAO     motoristaDAO     = new MotoristaDAO();
+    private final OcorrenciaDAO    ocorrenciaDAO    = new OcorrenciaDAO();
+    private final WhatsAppService  whatsAppService  = new WhatsAppService();
 
     public List<Frete> listarComPaginacao(String filtro, String statusFiltro,
-                                          int pagina, int registrosPorPagina) throws NegocioException {
+            int pagina, int registrosPorPagina) throws NegocioException {
         try {
             int offset = (pagina - 1) * registrosPorPagina;
-            return freteDAO.buscarComPaginacao(filtro, statusFiltro, offset, registrosPorPagina);
+            return freteDAO.buscarComPaginacao(filtro, statusFiltro,
+                    offset, registrosPorPagina);
         } catch (Exception e) {
             System.err.println("Erro ao listar fretes:");
             e.printStackTrace();
@@ -53,7 +56,6 @@ public class FreteBO {
             if (id == null) throw new FreteException("ID do frete não informado.");
             Frete frete = freteDAO.buscarPorId(id);
             if (frete == null) throw new FreteException("Frete não encontrado.");
-            // carrega ocorrências junto
             frete.setOcorrencias(ocorrenciaDAO.listarPorFrete(id));
             return frete;
         } catch (FreteException e) {
@@ -68,7 +70,6 @@ public class FreteBO {
     public void registrarFrete(Frete frete) throws NegocioException {
         Connection conn = null;
         try {
-
             validarCamposObrigatorios(frete);
 
             Veiculo veiculo = veiculoDAO.buscarPorId(frete.getVeiculo().getId());
@@ -77,23 +78,26 @@ public class FreteBO {
             if (veiculo.getStatus() != StatusVeiculo.DISPONIVEL)
                 throw new FreteException("O veículo selecionado não está disponível.");
             if (frete.getPesoKg().compareTo(veiculo.getCapacidadeKg()) > 0)
-                throw new FreteException("O peso da carga (" + frete.getPesoKg() + " kg) " +
-                        "excede a capacidade do veículo (" + veiculo.getCapacidadeKg() + " kg).");
+                throw new FreteException("O peso da carga (" + frete.getPesoKg() +
+                        " kg) excede a capacidade do veículo (" +
+                        veiculo.getCapacidadeKg() + " kg).");
 
             Motorista motorista = motoristaDAO.buscarPorId(frete.getMotorista().getId());
             if (motorista == null)
                 throw new FreteException("Motorista não encontrado.");
-            if (motorista.getStatus().name().equals("INATIVO") ||
-                motorista.getStatus().name().equals("SUSPENSO"))
+            if (motorista.getStatus() ==
+                    br.com.sistema_frete.enums.motorista.StatusMotorista.INATIVO ||
+                motorista.getStatus() ==
+                    br.com.sistema_frete.enums.motorista.StatusMotorista.SUSPENSO)
                 throw new FreteException("O motorista selecionado não está ativo.");
             if (freteDAO.buscarFretesAtivosPorMotorista(motorista.getId().longValue()))
                 throw new FreteException("O motorista já possui um frete em andamento.");
             if (motorista.getCnhValidade() == null ||
                 motorista.getCnhValidade().isBefore(frete.getDataEmissao()))
                 throw new FreteException("A CNH do motorista está vencida ou inválida.");
-
             if (!frete.getDataPrevisaoEntrega().isAfter(frete.getDataEmissao()))
-                throw new FreteException("A data prevista de entrega deve ser posterior à data de emissão.");
+                throw new FreteException(
+                    "A data prevista de entrega deve ser posterior à data de emissão.");
 
             conn = ConnectionFactory.getConnection();
             conn.setAutoCommit(false);
@@ -105,6 +109,19 @@ public class FreteBO {
 
             freteDAO.inserir(frete, conn);
             conn.commit();
+
+            // ── WhatsApp: notifica após commit ────────────────────────────
+            // Busca o frete completo com telefone do cliente (nova conexão)
+            // O try/catch isola: erro no WhatsApp NUNCA cancela o frete
+            try {
+                Frete freteCompleto = freteDAO.buscarPorNumeroComTelefone(numero);
+                if (freteCompleto != null) {
+                    whatsAppService.enviarFreteEmitido(freteCompleto);
+                }
+            } catch (Exception ex) {
+                System.err.println("[WhatsApp] Falha ao notificar emissão do frete "
+                        + numero + ": " + ex.getMessage());
+            }
 
         } catch (FreteException e) {
             rollback(conn);
@@ -123,19 +140,30 @@ public class FreteBO {
         Connection conn = null;
         try {
             Frete frete = freteDAO.buscarPorId(idFrete);
-            if (frete == null) throw new FreteException("Frete não encontrado.");
+            if (frete == null)
+                throw new FreteException("Frete não encontrado.");
             if (frete.getStatus() != FreteStatus.EMITIDO)
-                throw new FreteException("Apenas fretes com status EMITIDO podem ter saída confirmada.");
+                throw new FreteException(
+                    "Apenas fretes com status EMITIDO podem ter saída confirmada.");
 
             conn = ConnectionFactory.getConnection();
             conn.setAutoCommit(false);
 
             freteDAO.atualizarDataSaida(idFrete, conn);
-
-            freteDAO.atualizarStatusVeiculo(frete.getVeiculo().getId(), StatusVeiculo.EM_VIAGEM, conn);
+            freteDAO.atualizarStatusVeiculo(
+                    frete.getVeiculo().getId(), StatusVeiculo.EM_VIAGEM, conn);
 
             conn.commit();
 
+            try {
+                Frete freteCompleto = freteDAO.buscarPorIdComTelefone(idFrete);
+                if (freteCompleto != null) {
+                    whatsAppService.enviarSaidaConfirmada(freteCompleto);
+                }
+            } catch (Exception ex) {
+                System.err.println("[WhatsApp] Falha ao notificar SAIDA_CONFIRMADA: " + ex.getMessage());
+            }
+            
         } catch (FreteException e) {
             rollback(conn);
             throw e;
@@ -153,9 +181,11 @@ public class FreteBO {
         Connection conn = null;
         try {
             Frete frete = freteDAO.buscarPorId(idFrete);
-            if (frete == null) throw new FreteException("Frete não encontrado.");
+            if (frete == null)
+                throw new FreteException("Frete não encontrado.");
             if (frete.getStatus() != FreteStatus.EMITIDO)
-                throw new FreteException("Somente fretes com status EMITIDO podem ser cancelados.");
+                throw new FreteException(
+                    "Somente fretes com status EMITIDO podem ser cancelados.");
 
             conn = ConnectionFactory.getConnection();
             conn.setAutoCommit(false);
@@ -179,58 +209,98 @@ public class FreteBO {
         Connection conn = null;
         try {
             Frete frete = freteDAO.buscarPorId(ocorrencia.getIdFrete());
-            if (frete == null) throw new FreteException("Frete não encontrado.");
+            if (frete == null)
+                throw new FreteException("Frete não encontrado.");
 
-            // status que não aceitam ocorrência
-            if (frete.getStatus() == FreteStatus.ENTREGUE ||
+            if (frete.getStatus() == FreteStatus.ENTREGUE    ||
                 frete.getStatus() == FreteStatus.NAO_ENTREGUE ||
                 frete.getStatus() == FreteStatus.CANCELADO)
-                throw new FreteException("Não é possível registrar ocorrência em frete " +
-                        frete.getStatus().name() + ".");
+                throw new FreteException(
+                    "Não é possível registrar ocorrência em frete " +
+                    frete.getStatus().name() + ".");
 
             conn = ConnectionFactory.getConnection();
             conn.setAutoCommit(false);
 
-            Ocorrencia maisRecente = ocorrenciaDAO.buscarMaisRecente(frete.getId(), conn);
+            Ocorrencia maisRecente =
+                    ocorrenciaDAO.buscarMaisRecente(frete.getId(), conn);
             if (maisRecente != null &&
                 !ocorrencia.getDataHora().isAfter(maisRecente.getDataHora()))
-                throw new FreteException("A data/hora da ocorrência deve ser posterior à última ocorrência registrada.");
+                throw new FreteException(
+                    "A data/hora da ocorrência deve ser posterior à última registrada.");
 
             // validações por tipo
             switch (ocorrencia.getTipo()) {
                 case AVARIA:
                 case EXTRAVIO:
                 case OUTROS:
-                    if (ocorrencia.getDescricao() == null || ocorrencia.getDescricao().trim().isEmpty())
+                    if (ocorrencia.getDescricao() == null ||
+                        ocorrencia.getDescricao().trim().isEmpty())
                         throw new FreteException("Descrição obrigatória para o tipo " +
                                 ocorrencia.getTipo().name() + ".");
                     break;
-
                 case ENTREGA_REALIZADA:
-                    if (ocorrencia.getNomeRecebedor() == null || ocorrencia.getNomeRecebedor().trim().isEmpty())
-                        throw new FreteException("Nome do recebedor é obrigatório para Entrega Realizada.");
-                    if (ocorrencia.getDocumentoRecebedor() == null || ocorrencia.getDocumentoRecebedor().trim().isEmpty())
-                        throw new FreteException("Documento do recebedor é obrigatório para Entrega Realizada.");
+                    if (ocorrencia.getNomeRecebedor() == null ||
+                        ocorrencia.getNomeRecebedor().trim().isEmpty())
+                        throw new FreteException(
+                            "Nome do recebedor é obrigatório para Entrega Realizada.");
+                    if (ocorrencia.getDocumentoRecebedor() == null ||
+                        ocorrencia.getDocumentoRecebedor().trim().isEmpty())
+                        throw new FreteException(
+                            "Documento do recebedor é obrigatório para Entrega Realizada.");
                     break;
-
                 default:
                     break;
             }
 
             ocorrenciaDAO.inserir(ocorrencia, conn);
 
-            // transições automáticas de status
-            if (ocorrencia.getTipo() == br.com.sistema_frete.enums.ocorrencia.TipoOcorrencia.EM_ROTA
-                && frete.getStatus() == FreteStatus.SAIDA_CONFIRMADA) {
+            boolean virarTransito = ocorrencia.getTipo() == TipoOcorrencia.EM_ROTA
+                    && frete.getStatus() == FreteStatus.SAIDA_CONFIRMADA;
+
+            if (virarTransito) {
                 freteDAO.atualizarStatus(frete.getId(), FreteStatus.EM_TRANSITO, conn);
             }
 
-            if (ocorrencia.getTipo() == br.com.sistema_frete.enums.ocorrencia.TipoOcorrencia.ENTREGA_REALIZADA) {
-                freteDAO.atualizarDataEntrega(frete.getId(), FreteStatus.ENTREGUE, conn);
-                freteDAO.atualizarStatusVeiculo(frete.getVeiculo().getId(), StatusVeiculo.DISPONIVEL, conn);
+            boolean virarEntregue =
+                    ocorrencia.getTipo() == TipoOcorrencia.ENTREGA_REALIZADA;
+
+            if (virarEntregue) {
+                freteDAO.atualizarDataEntrega(
+                        frete.getId(), FreteStatus.ENTREGUE, conn);
+                freteDAO.atualizarStatusVeiculo(
+                        frete.getVeiculo().getId(), StatusVeiculo.DISPONIVEL, conn);
             }
 
             conn.commit();
+
+            // ── WhatsApp: notifica após commit ────────────────────────────
+            // Ambos os try/catch são isolados — erro no WhatsApp não desfaz o commit
+            if (virarTransito) {
+                try {
+                    Frete freteCompleto =
+                            freteDAO.buscarPorIdComTelefone(frete.getId());
+                    if (freteCompleto != null) {
+                        whatsAppService.enviarFreteEmTransito(freteCompleto);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("[WhatsApp] Falha ao notificar EM_TRANSITO para "
+                            + frete.getNumero() + ": " + ex.getMessage());
+                }
+            }
+
+            if (virarEntregue) {
+                try {
+                    Frete freteCompleto =
+                            freteDAO.buscarPorIdComTelefone(frete.getId());
+                    if (freteCompleto != null) {
+                        whatsAppService.enviarFreteEntregue(freteCompleto);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("[WhatsApp] Falha ao notificar ENTREGUE para "
+                            + frete.getNumero() + ": " + ex.getMessage());
+                }
+            }
 
         } catch (FreteException e) {
             rollback(conn);
@@ -263,26 +333,30 @@ public class FreteBO {
         if (frete.getDestinatario() == null || frete.getDestinatario().getId() == null)
             throw new FreteException("Destinatário é obrigatório.");
         if (frete.getRemetente().getId().equals(frete.getDestinatario().getId()))
-            throw new FreteException("Remetente e destinatário não podem ser o mesmo cliente.");
+            throw new FreteException(
+                "Remetente e destinatário não podem ser o mesmo cliente.");
         if (frete.getMotorista() == null || frete.getMotorista().getId() == null)
             throw new FreteException("Motorista é obrigatório.");
         if (frete.getVeiculo() == null || frete.getVeiculo().getId() == null)
             throw new FreteException("Veículo é obrigatório.");
         if (frete.getCidadeOrigem() == null || frete.getCidadeOrigem().trim().isEmpty())
-            throw new FreteException("Município de origem é obrigatório.");
+            throw new FreteException("Cidade de origem é obrigatório.");
         if (frete.getUfOrigem() == null || frete.getUfOrigem().trim().isEmpty())
             throw new FreteException("UF de origem é obrigatória.");
         if (frete.getCidadeDestino() == null || frete.getCidadeDestino().trim().isEmpty())
-            throw new FreteException("Município de destino é obrigatório.");
+            throw new FreteException("Cidade de destino é obrigatório.");
         if (frete.getUfDestino() == null || frete.getUfDestino().trim().isEmpty())
             throw new FreteException("UF de destino é obrigatória.");
-        if (frete.getDescricaoCarga() == null || frete.getDescricaoCarga().trim().isEmpty())
+        if (frete.getDescricaoCarga() == null ||
+            frete.getDescricaoCarga().trim().isEmpty())
             throw new FreteException("Descrição da carga é obrigatória.");
-        if (frete.getPesoKg() == null || frete.getPesoKg().compareTo(java.math.BigDecimal.ZERO) <= 0)
+        if (frete.getPesoKg() == null ||
+            frete.getPesoKg().compareTo(java.math.BigDecimal.ZERO) <= 0)
             throw new FreteException("Peso da carga deve ser maior que zero.");
         if (frete.getVolumes() == null || frete.getVolumes() <= 0)
             throw new FreteException("Quantidade de volumes deve ser maior que zero.");
-        if (frete.getValorFrete() == null || frete.getValorFrete().compareTo(java.math.BigDecimal.ZERO) <= 0)
+        if (frete.getValorFrete() == null ||
+            frete.getValorFrete().compareTo(java.math.BigDecimal.ZERO) <= 0)
             throw new FreteException("Valor do frete deve ser maior que zero.");
         if (frete.getDataPrevisaoEntrega() == null)
             throw new FreteException("Data prevista de entrega é obrigatória.");
