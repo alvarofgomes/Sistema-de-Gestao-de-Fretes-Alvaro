@@ -13,7 +13,7 @@ import java.util.List;
 public class AuthenticationFilter implements Filter {
 
     private static final List<String> ROTAS_PUBLICAS = Arrays.asList(
-            "/login", "/login.jsp", "/erro.jsp", "/cadastro"
+            "/login", "/login.jsp", "/erro.jsp", "/cadastro", "/teste-whatsapp"
     );
 
     private static final List<String> ROTAS_ADMIN = Arrays.asList(
@@ -23,6 +23,7 @@ public class AuthenticationFilter implements Filter {
     private static final List<String> ROTAS_BLOQUEADAS_CLIENTE = Arrays.asList(
     	    "/clientes", "/motoristas", "/veiculos", "/fretes",
     	    "/usuarios", "/home", "/ocorrencias", "/relatorios"
+    	    // NÃO bloquear /solicitacoes-frete nem /portal-cliente aqui
     	);
 
     @Override

@@ -21,6 +21,8 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+    	System.out.println(com.twilio.Twilio.class.getName());
+    	
         // se já está logado, redireciona direto
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("usuarioLogado") != null) {
