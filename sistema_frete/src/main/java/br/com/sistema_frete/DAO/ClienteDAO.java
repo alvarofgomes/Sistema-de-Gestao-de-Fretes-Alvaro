@@ -1,6 +1,7 @@
 package br.com.sistema_frete.DAO;
 
 import br.com.sistema_frete.enums.cliente.StatusCliente;
+import br.com.sistema_frete.enums.cliente.TipoCliente;
 import br.com.sistema_frete.model.Cliente;
 import br.com.sistema_frete.util.ConnectionFactory;
 
@@ -15,7 +16,7 @@ public class ClienteDAO {
     public List<Cliente> buscarComPaginacao(String filtro, int offset, int limit) {
         List<Cliente> clientes = new ArrayList<>();
 
-        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, status " +
+        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, tipo, status " +
                      "FROM cliente " +
                      "WHERE razao_social ILIKE ? OR nome_fantasia ILIKE ? " +
                      "ORDER BY razao_social ASC " +
@@ -37,6 +38,8 @@ public class ClienteDAO {
                     c.setRazaoSocial(rs.getString("razao_social"));
                     c.setNomeFantasia(rs.getString("nome_fantasia"));
                     c.setCnpj(rs.getString("cnpj"));
+                    String tipo = rs.getString("tipo");
+                    if (tipo != null) c.setTipo(TipoCliente.valueOf(tipo));
                     String status = rs.getString("status");
                     if (status != null) c.setStatus(StatusCliente.valueOf(status));
                     clientes.add(c);
@@ -75,7 +78,7 @@ public class ClienteDAO {
     }
 
     public Cliente buscarPorCnpj(String cnpj) {
-        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, status " +
+        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, tipo, status " +
                      "FROM cliente WHERE cnpj = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -90,6 +93,8 @@ public class ClienteDAO {
                     c.setRazaoSocial(rs.getString("razao_social"));
                     c.setNomeFantasia(rs.getString("nome_fantasia"));
                     c.setCnpj(rs.getString("cnpj"));
+                    String tipo = rs.getString("tipo");
+                    if (tipo != null) c.setTipo(TipoCliente.valueOf(tipo));
                     String status = rs.getString("status");
                     if (status != null) c.setStatus(StatusCliente.valueOf(status));
                     return c;
@@ -105,7 +110,7 @@ public class ClienteDAO {
     }
 
     public Cliente buscarPorId(Integer id) {
-        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, inscricao_estadual, " +
+        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, inscricao_estadual, tipo, " +
                      "logradouro, numero, complemento, bairro, cidade, uf, cep, " +
                      "telefone, email, status FROM cliente WHERE id = ?";
 
@@ -122,6 +127,8 @@ public class ClienteDAO {
                     c.setNomeFantasia(rs.getString("nome_fantasia"));
                     c.setCnpj(rs.getString("cnpj"));
                     c.setInscricaoEstadual(rs.getString("inscricao_estadual"));
+                    String tipo = rs.getString("tipo");
+                    if (tipo != null) c.setTipo(TipoCliente.valueOf(tipo));
                     c.setLogradouro(rs.getString("logradouro"));
                     c.setNumero(rs.getString("numero"));
                     c.setComplemento(rs.getString("complemento"));
@@ -149,7 +156,7 @@ public class ClienteDAO {
     public List<Cliente> buscarTodos() {
         List<Cliente> clientes = new ArrayList<>();
 
-        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, status " +
+        String sql = "SELECT id, razao_social, nome_fantasia, cnpj, tipo, status " +
                      "FROM cliente WHERE status = 'ATIVO' ORDER BY razao_social ASC";
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -162,6 +169,8 @@ public class ClienteDAO {
                     c.setRazaoSocial(rs.getString("razao_social"));
                     c.setNomeFantasia(rs.getString("nome_fantasia"));
                     c.setCnpj(rs.getString("cnpj"));
+                    String tipo = rs.getString("tipo");
+                    if (tipo != null) c.setTipo(TipoCliente.valueOf(tipo));
                     String status = rs.getString("status");
                     if (status != null) c.setStatus(StatusCliente.valueOf(status));
                     clientes.add(c);
@@ -199,9 +208,9 @@ public class ClienteDAO {
     private void inserir(Cliente cliente) {
     	
         String sql = "INSERT INTO cliente " +
-                     "(razao_social, nome_fantasia, cnpj, inscricao_estadual, logradouro, " +
+                     "(razao_social, nome_fantasia, cnpj, inscricao_estadual, tipo, logradouro, " +
                      "numero, complemento, bairro, cidade, uf, cep, telefone, email, status) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         System.out.println("sql cliente: " + sql); // Debug: Verificar a consulta SQL
 
@@ -219,7 +228,7 @@ public class ClienteDAO {
 
     private void atualizar(Cliente cliente) {
         String sql = "UPDATE cliente SET " +
-                     "razao_social=?, nome_fantasia=?, cnpj=?, inscricao_estadual=?, logradouro=?, " +
+                     "razao_social=?, nome_fantasia=?, cnpj=?, inscricao_estadual=?, tipo=?, logradouro=?, " +
                      "numero=?, complemento=?, bairro=?, cidade=?, uf=?, cep=?, " +
                      "telefone=?, email=?, status=? WHERE id=?";
 
@@ -227,7 +236,7 @@ public class ClienteDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             preencherPs(cliente, ps);
-            ps.setInt(15, cliente.getId());
+            ps.setInt(16, cliente.getId());
             ps.executeUpdate();
 
         } catch (Exception e) {
@@ -241,15 +250,16 @@ public class ClienteDAO {
         ps.setString(2, c.getNomeFantasia());
         ps.setString(3, c.getCnpj());
         ps.setString(4, c.getInscricaoEstadual());
-        ps.setString(5, c.getLogradouro());
-        ps.setString(6, c.getNumero());
-        ps.setString(7, c.getComplemento());
-        ps.setString(8, c.getBairro());
-        ps.setString(9, c.getCidade());
-        ps.setString(10, c.getUf());
-        ps.setString(11, c.getCep());
-        ps.setString(12, c.getTelefone());
-        ps.setString(13, c.getEmail());
-        ps.setString(14, c.getStatus() != null ? c.getStatus().name() : null);
+        ps.setString(5, c.getTipo() != null ? c.getTipo().name() : null);
+        ps.setString(6, c.getLogradouro());
+        ps.setString(7, c.getNumero());
+        ps.setString(8, c.getComplemento());
+        ps.setString(9, c.getBairro());
+        ps.setString(10, c.getCidade());
+        ps.setString(11, c.getUf());
+        ps.setString(12, c.getCep());
+        ps.setString(13, c.getTelefone());
+        ps.setString(14, c.getEmail());
+        ps.setString(15, c.getStatus() != null ? c.getStatus().name() : null);
     }
 }

@@ -226,11 +226,29 @@ public class FreteBO {
                 throw new FreteException(
                     "A data/hora da ocorrência deve ser posterior à última registrada.");
 
+            // validação de sequência: tipo deve ser compatível com o status atual
+            TipoOcorrencia tipoOcorrencia = ocorrencia.getTipo();
+            FreteStatus statusAtual = frete.getStatus();
+
+            if (tipoOcorrencia == TipoOcorrencia.ENTREGA_REALIZADA
+                    && statusAtual != FreteStatus.EM_TRANSITO)
+                throw new FreteException(
+                    "Entrega Realizada só pode ser registrada em fretes com status EM TRÂNSITO.");
+            if (tipoOcorrencia == TipoOcorrencia.TENTATIVA_ENTREGA
+                    && statusAtual != FreteStatus.EM_TRANSITO)
+                throw new FreteException(
+                    "Tentativa de Entrega só pode ser registrada em fretes com status EM TRÂNSITO.");
+            if (tipoOcorrencia == TipoOcorrencia.EM_ROTA
+                    && statusAtual != FreteStatus.SAIDA_CONFIRMADA)
+                throw new FreteException(
+                    "Ocorrência Em Rota só pode ser registrada em fretes com status SAÍDA CONFIRMADA.");
+
             // validações por tipo
             switch (ocorrencia.getTipo()) {
                 case AVARIA:
                 case EXTRAVIO:
                 case OUTROS:
+                case TENTATIVA_ENTREGA:
                     if (ocorrencia.getDescricao() == null ||
                         ocorrencia.getDescricao().trim().isEmpty())
                         throw new FreteException("Descrição obrigatória para o tipo " +
@@ -259,12 +277,21 @@ public class FreteBO {
                 freteDAO.atualizarStatus(frete.getId(), FreteStatus.EM_TRANSITO, conn);
             }
 
-            boolean virarEntregue =
-                    ocorrencia.getTipo() == TipoOcorrencia.ENTREGA_REALIZADA;
+            boolean virarEntregue = ocorrencia.getTipo() == TipoOcorrencia.ENTREGA_REALIZADA
+                    && frete.getStatus() == FreteStatus.EM_TRANSITO;
 
             if (virarEntregue) {
                 freteDAO.atualizarDataEntrega(
                         frete.getId(), FreteStatus.ENTREGUE, conn);
+                freteDAO.atualizarStatusVeiculo(
+                        frete.getVeiculo().getId(), StatusVeiculo.DISPONIVEL, conn);
+            }
+
+            boolean virarNaoEntregue = ocorrencia.getTipo() == TipoOcorrencia.TENTATIVA_ENTREGA
+                    && frete.getStatus() == FreteStatus.EM_TRANSITO;
+
+            if (virarNaoEntregue) {
+                freteDAO.atualizarStatus(frete.getId(), FreteStatus.NAO_ENTREGUE, conn);
                 freteDAO.atualizarStatusVeiculo(
                         frete.getVeiculo().getId(), StatusVeiculo.DISPONIVEL, conn);
             }

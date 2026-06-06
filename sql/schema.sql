@@ -4,12 +4,13 @@
 -- ═══════════════════════════════════════════════════════════
 
 -- ── 1. LIMPAR TABELAS (ordem importa por causa das FKs) ────
-DROP TABLE IF EXISTS ocorrencia_frete CASCADE;
-DROP TABLE IF EXISTS frete          CASCADE;
-DROP TABLE IF EXISTS usuario        CASCADE;
-DROP TABLE IF EXISTS veiculo        CASCADE;
-DROP TABLE IF EXISTS motorista      CASCADE;
-DROP TABLE IF EXISTS cliente        CASCADE;
+DROP TABLE IF EXISTS solicitacao_frete  CASCADE;
+DROP TABLE IF EXISTS ocorrencia_frete   CASCADE;
+DROP TABLE IF EXISTS frete              CASCADE;
+DROP TABLE IF EXISTS usuario            CASCADE;
+DROP TABLE IF EXISTS veiculo            CASCADE;
+DROP TABLE IF EXISTS motorista          CASCADE;
+DROP TABLE IF EXISTS cliente            CASCADE;
 
 -- ── 2. CRIAR TABELAS ───────────────────────────────────────
 
@@ -19,11 +20,12 @@ CREATE TABLE cliente (
     nome_fantasia     VARCHAR(150),
     cnpj              VARCHAR(18)  NOT NULL UNIQUE,
     inscricao_estadual VARCHAR(30),
+    tipo              VARCHAR(20)  NOT NULL,
     logradouro        VARCHAR(150),
     numero            VARCHAR(20),
     complemento       VARCHAR(100),
     bairro            VARCHAR(100),
-    municipio         VARCHAR(100),
+    cidade            VARCHAR(100),
     uf                CHAR(2),
     cep               VARCHAR(9),
     telefone          VARCHAR(20),
@@ -67,28 +69,28 @@ CREATE TABLE usuario (
 );
 
 CREATE TABLE frete (
-    id                   SERIAL PRIMARY KEY,
-    numero               VARCHAR(20)    NOT NULL UNIQUE,
-    id_remetente         INTEGER        NOT NULL REFERENCES cliente(id),
-    id_destinatario      INTEGER        NOT NULL REFERENCES cliente(id),
-    id_motorista         INTEGER        NOT NULL REFERENCES motorista(id),
-    id_veiculo           INTEGER        NOT NULL REFERENCES veiculo(id),
-    municipio_origem     VARCHAR(100)   NOT NULL,
-    uf_origem            CHAR(2)        NOT NULL,
-    municipio_destino    VARCHAR(100)   NOT NULL,
-    uf_destino           CHAR(2)        NOT NULL,
-    descricao_carga      VARCHAR(255)   NOT NULL,
-    peso_kg              NUMERIC(10,2)  NOT NULL,
-    volumes              INTEGER        NOT NULL,
-    valor_frete          NUMERIC(12,2)  NOT NULL,
-    aliquota_icms        NUMERIC(5,2)   NOT NULL,
-    valor_icms           NUMERIC(12,2)  NOT NULL,
-    valor_total          NUMERIC(12,2)  NOT NULL,
-    status               VARCHAR(30)    NOT NULL,
-    data_emissao         DATE           NOT NULL,
-    data_previsao_entrega DATE          NOT NULL,
-    data_saida           TIMESTAMP,
-    data_entrega         TIMESTAMP
+    id                    SERIAL PRIMARY KEY,
+    numero                VARCHAR(20)    NOT NULL UNIQUE,
+    id_remetente          INTEGER        NOT NULL REFERENCES cliente(id),
+    id_destinatario       INTEGER        NOT NULL REFERENCES cliente(id),
+    id_motorista          INTEGER        NOT NULL REFERENCES motorista(id),
+    id_veiculo            INTEGER        NOT NULL REFERENCES veiculo(id),
+    cidade_origem         VARCHAR(100)   NOT NULL,
+    uf_origem             CHAR(2)        NOT NULL,
+    cidade_destino        VARCHAR(100)   NOT NULL,
+    uf_destino            CHAR(2)        NOT NULL,
+    descricao_carga       VARCHAR(255)   NOT NULL,
+    peso_kg               NUMERIC(10,2)  NOT NULL,
+    volumes               INTEGER        NOT NULL,
+    valor_frete           NUMERIC(12,2)  NOT NULL,
+    aliquota_icms         NUMERIC(5,2)   NOT NULL,
+    valor_icms            NUMERIC(12,2)  NOT NULL,
+    valor_total           NUMERIC(12,2)  NOT NULL,
+    status                VARCHAR(30)    NOT NULL,
+    data_emissao          DATE           NOT NULL,
+    data_previsao_entrega DATE           NOT NULL,
+    data_saida            TIMESTAMP,
+    data_entrega          TIMESTAMP
 );
 
 CREATE TABLE ocorrencia_frete (
@@ -96,24 +98,42 @@ CREATE TABLE ocorrencia_frete (
     id_frete            INTEGER       NOT NULL REFERENCES frete(id),
     tipo                VARCHAR(30)   NOT NULL,
     data_hora           TIMESTAMP     NOT NULL,
-    municipio           VARCHAR(100)  NOT NULL,
+    cidade              VARCHAR(100)  NOT NULL,
     uf                  CHAR(2)       NOT NULL,
     descricao           VARCHAR(255),
     nome_recebedor      VARCHAR(150),
     documento_recebedor VARCHAR(30)
 );
 
+CREATE TABLE solicitacao_frete (
+    id                  SERIAL PRIMARY KEY,
+    id_cliente          INTEGER        NOT NULL REFERENCES cliente(id),
+    cidade_origem       VARCHAR(100)   NOT NULL,
+    uf_origem           CHAR(2)        NOT NULL,
+    cidade_destino      VARCHAR(100)   NOT NULL,
+    uf_destino          CHAR(2)        NOT NULL,
+    descricao_carga     VARCHAR(255)   NOT NULL,
+    peso_kg             NUMERIC(10,2)  NOT NULL,
+    volumes             INTEGER        NOT NULL,
+    observacao          VARCHAR(500),
+    status              VARCHAR(20)    NOT NULL,
+    data_solicitacao    TIMESTAMP      NOT NULL DEFAULT NOW(),
+    data_analise        TIMESTAMP,
+    usuario_analise_id  INTEGER REFERENCES usuario(id),
+    motivo_recusa       VARCHAR(500)
+);
+
 -- ── 3. DADOS DE EXEMPLO ────────────────────────────────────
 
-INSERT INTO cliente (razao_social, nome_fantasia, cnpj, inscricao_estadual,
-    logradouro, numero, complemento, bairro, municipio, uf, cep,
+INSERT INTO cliente (razao_social, nome_fantasia, cnpj, inscricao_estadual, tipo,
+    logradouro, numero, complemento, bairro, cidade, uf, cep,
     telefone, email, status)
 VALUES
-('Comercial Recife LTDA',    'Comercial Recife',     '11.444.777/0001-61', '123456789',
+('Comercial Recife LTDA',    'Comercial Recife',     '11.444.777/0001-61', '123456789', 'AMBOS',
  'Av. Recife',      '100', 'Sala 01',  'Boa Viagem',  'Recife',                 'PE', '51020-000', '(81)3333-1111', 'contato@comercialrecife.com', 'ATIVO'),
-('Distribuidora Jaboatao SA','Distribuidora Jaboatao','45.723.174/0001-10', '987654321',
+('Distribuidora Jaboatao SA','Distribuidora Jaboatao','45.723.174/0001-10', '987654321', 'DESTINATARIO',
  'Rua das Flores',  '250', NULL,       'Centro',       'Jaboatao dos Guararapes','PE', '54010-120', '(81)3333-2222', 'fiscal@djaboatao.com',        'ATIVO'),
-('Atacado Nordeste ME',      'Atacado Nordeste',      '18.236.120/0001-58', '456123789',
+('Atacado Nordeste ME',      'Atacado Nordeste',      '18.236.120/0001-58', '456123789', 'REMETENTE',
  'Av. Agamenon',    '500', 'Galpao B', 'Espinheiro',   'Recife',                 'PE', '52020-120', '(81)3333-3333', 'compras@atacadonordeste.com',  'ATIVO');
 
 INSERT INTO motorista (nome, cpf, data_nascimento, telefone,
@@ -132,15 +152,13 @@ VALUES
 
 -- usuário admin — senha: admin123
 -- hash SHA-256 gerado pelo HashUtil do sistema
--- se o hash do SEU sistema for diferente, rode /gerar-hash?senha=admin123
--- e substitua o valor abaixo
 INSERT INTO usuario (nome, login, senha, perfil, status)
 VALUES ('Administrador', 'admin',
         '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
         'ADMIN', 'ATIVO');
 
 INSERT INTO frete (numero, id_remetente, id_destinatario, id_motorista, id_veiculo,
-    municipio_origem, uf_origem, municipio_destino, uf_destino,
+    cidade_origem, uf_origem, cidade_destino, uf_destino,
     descricao_carga, peso_kg, volumes, valor_frete, aliquota_icms,
     valor_icms, valor_total, status, data_emissao, data_previsao_entrega,
     data_saida, data_entrega)
@@ -165,14 +183,20 @@ VALUES
  'Eletronicos', 600.00, 25, 500.00, 12.00, 60.00, 560.00,
  'CANCELADO', '2026-03-12', '2026-03-13', NULL, NULL);
 
-INSERT INTO ocorrencia_frete (id_frete, tipo, data_hora, municipio, uf,
+INSERT INTO ocorrencia_frete (id_frete, tipo, data_hora, cidade, uf,
     descricao, nome_recebedor, documento_recebedor)
 VALUES
 (2, 'SAIDA_DO_PATIO',    '2026-03-14 08:30:00', 'Recife',   'PE', 'Saida confirmada do patio',          NULL,           NULL),
 (3, 'EM_ROTA',           '2026-03-13 10:15:00', 'Palmares', 'PE', 'Veiculo em rota para destino',        NULL,           NULL),
 (4, 'ENTREGA_REALIZADA', '2026-03-10 15:10:00', 'Paulista', 'PE', 'Entrega concluida sem divergencias',  'Maria Oliveira','12345678900'),
 (3, 'OUTROS',            '2026-03-13 13:40:00', 'Carpina',  'PE', 'Parada para conferencia da carga',    NULL,           NULL),
-(5, 'OUTROS',            '2026-03-12 16:00:00', 'Jaboatao dos Guararapes','PE','Frete cancelado antes da saida', NULL,   NULL);
+(5, 'OUTROS',            '2026-03-12 16:00:00', 'Jaboatao dos Guararapes','PE','Frete cancelado antes da saida', NULL, NULL);
+
+INSERT INTO solicitacao_frete (id_cliente, cidade_origem, uf_origem, cidade_destino, uf_destino,
+    descricao_carga, peso_kg, volumes, observacao, status)
+VALUES
+(1, 'Recife', 'PE', 'Fortaleza', 'CE', 'Produtos alimentícios', 2000.00, 80, NULL, 'PENDENTE'),
+(2, 'Jaboatao dos Guararapes', 'PE', 'Natal', 'RN', 'Material de escritório', 500.00, 30, 'Entrega urgente', 'APROVADA');
 
 -- ── 4. VERIFICAÇÃO FINAL ───────────────────────────────────
 SELECT 'clientes'        AS tabela, COUNT(*) AS total FROM cliente
@@ -185,4 +209,6 @@ SELECT 'usuarios',        COUNT(*) FROM usuario
 UNION ALL
 SELECT 'fretes',          COUNT(*) FROM frete
 UNION ALL
-SELECT 'ocorrencias',     COUNT(*) FROM ocorrencia_frete;
+SELECT 'ocorrencias',     COUNT(*) FROM ocorrencia_frete
+UNION ALL
+SELECT 'solicitacoes',    COUNT(*) FROM solicitacao_frete;

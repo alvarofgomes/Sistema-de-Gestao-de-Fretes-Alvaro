@@ -31,7 +31,7 @@ public class FreteDAO {
 
     public boolean buscarFretesAtivosPorMotorista(Long idMotorista) {
         String sql = "SELECT 1 FROM frete WHERE id_motorista=? " +
-                     "AND status IN ('EMITIDO','SAIDA_CONFIRMADA','EM_TRANSITO') LIMIT 1";
+                     "AND status IN ('SAIDA_CONFIRMADA','EM_TRANSITO') LIMIT 1";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, idMotorista);
@@ -41,6 +41,21 @@ public class FreteDAO {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao buscar fretes ativos por motorista.", e);
+        }
+    }
+
+    public boolean veiculoTemFreteEmAndamento(Integer idVeiculo) {
+        String sql = "SELECT 1 FROM frete WHERE id_veiculo=? " +
+                     "AND status IN ('SAIDA_CONFIRMADA','EM_TRANSITO') LIMIT 1";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idVeiculo);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao verificar fretes ativos do veículo.", e);
         }
     }
 

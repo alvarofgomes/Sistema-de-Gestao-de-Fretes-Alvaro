@@ -3,6 +3,7 @@ package br.com.sistema_frete.BO;
 import java.math.BigDecimal;
 import java.util.List;
 
+import br.com.sistema_frete.DAO.FreteDAO;
 import br.com.sistema_frete.DAO.VeiculoDAO;
 import br.com.sistema_frete.exception.CadastroException;
 import br.com.sistema_frete.exception.NegocioException;
@@ -12,6 +13,7 @@ import br.com.sistema_frete.enums.veiculo.StatusVeiculo;
 public class VeiculoBO {
 
     private final VeiculoDAO veiculoDAO = new VeiculoDAO();
+    private final FreteDAO   freteDAO   = new FreteDAO();
 
     public List<Veiculo> listarDisponiveis() throws NegocioException {
         try {
@@ -52,6 +54,14 @@ public class VeiculoBO {
 
                 if (existente == null) {
                     throw new CadastroException("Veículo não encontrado para edição.");
+                }
+
+                if (veiculo.getStatus() == StatusVeiculo.DISPONIVEL
+                        && existente.getStatus() != StatusVeiculo.DISPONIVEL
+                        && freteDAO.veiculoTemFreteEmAndamento(veiculo.getId())) {
+                    throw new CadastroException(
+                        "Não é possível definir o veículo como Disponível manualmente: " +
+                        "ele possui frete em andamento. O status é atualizado automaticamente ao concluir o frete.");
                 }
 
                 Veiculo mesmaPlaca = veiculoDAO.buscarPorPlaca(veiculo.getPlaca());

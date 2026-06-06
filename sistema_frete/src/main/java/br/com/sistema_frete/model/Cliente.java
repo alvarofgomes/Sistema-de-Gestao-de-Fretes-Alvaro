@@ -1,6 +1,7 @@
 package br.com.sistema_frete.model;
 
 import br.com.sistema_frete.enums.cliente.StatusCliente;
+import br.com.sistema_frete.enums.cliente.TipoCliente;
 
 public class Cliente {
 
@@ -9,6 +10,7 @@ public class Cliente {
 	private String nomeFantasia;
 	private String cnpj;
 	private String inscricaoEstadual;
+	private TipoCliente tipo;
 	private String logradouro;
 	private String numero;
 	private String complemento;
@@ -24,13 +26,14 @@ public class Cliente {
 	}
 
 	public Cliente(Integer id, String razaoSocial, String nomeFantasia, String cnpj, String inscricaoEstadual,
-			String logradouro, String numero, String complemento, String bairro, String cidade, String uf,
-			String cep, String telefone, String email, StatusCliente status) {
+			TipoCliente tipo, String logradouro, String numero, String complemento, String bairro, String cidade,
+			String uf, String cep, String telefone, String email, StatusCliente status) {
 		this.id = id;
 		this.razaoSocial = razaoSocial;
 		this.nomeFantasia = nomeFantasia;
 		this.cnpj = cnpj;
 		this.inscricaoEstadual = inscricaoEstadual;
+		this.tipo = tipo;
 		this.logradouro = logradouro;
 		this.numero = numero;
 		this.complemento = complemento;
@@ -81,6 +84,14 @@ public class Cliente {
 
 	public void setInscricaoEstadual(String inscricaoEstadual) {
 		this.inscricaoEstadual = inscricaoEstadual;
+	}
+
+	public TipoCliente getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoCliente tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getLogradouro() {
