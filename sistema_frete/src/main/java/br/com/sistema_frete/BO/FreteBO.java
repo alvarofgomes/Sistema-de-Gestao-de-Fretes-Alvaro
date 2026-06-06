@@ -110,7 +110,6 @@ public class FreteBO {
             freteDAO.inserir(frete, conn);
             conn.commit();
 
-            // ── WhatsApp: notifica após commit ────────────────────────────
             try {
                 Frete freteCompleto = freteDAO.buscarPorNumeroComTelefone(numero);
                 if (freteCompleto != null) {
