@@ -111,8 +111,6 @@ public class FreteBO {
             conn.commit();
 
             // ── WhatsApp: notifica após commit ────────────────────────────
-            // Busca o frete completo com telefone do cliente (nova conexão)
-            // O try/catch isola: erro no WhatsApp NUNCA cancela o frete
             try {
                 Frete freteCompleto = freteDAO.buscarPorNumeroComTelefone(numero);
                 if (freteCompleto != null) {
@@ -275,7 +273,6 @@ public class FreteBO {
             conn.commit();
 
             // ── WhatsApp: notifica após commit ────────────────────────────
-            // Ambos os try/catch são isolados — erro no WhatsApp não desfaz o commit
             if (virarTransito) {
                 try {
                     Frete freteCompleto =

@@ -1,0 +1,4 @@
+twilio.account.sid=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+twilio.auth.token=SEU_AUTH_TOKEN_AQUI
+twilio.whatsapp.from=whatsapp:+14155238886
+twilio.whatsapp.to=whatsapp:+55XXXXXXXXXXX
