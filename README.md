@@ -332,7 +332,16 @@ sistema-gestao-fretes/
 
 ## 🗄️ Banco de Dados
 
-O sistema utiliza **PostgreSQL** como banco de dados relacional.
+O sistema utiliza **PostgreSQL** como banco de dados relacional. O script `sql/schema.sql` recria toda a estrutura do zero e insere dados de exemplo prontos para uso.
+
+### O que o script faz
+
+| Seção | Descrição |
+|---|---|
+| **DROP … CASCADE** | Remove as tabelas existentes (seguro para re-execução) |
+| **CREATE TABLE** | Cria as 6 tabelas com PKs, FKs e constraints |
+| **INSERT** | Popula 3 clientes, 3 motoristas, 3 veículos, 1 usuário admin, 5 fretes e 5 ocorrências |
+| **SELECT final** | Exibe a contagem de registros em cada tabela para conferência |
 
 ### Tabelas principais
 
@@ -344,7 +353,6 @@ O sistema utiliza **PostgreSQL** como banco de dados relacional.
 | `frete` | Fretes emitidos com todo o ciclo |
 | `ocorrencia_frete` | Histórico de ocorrências por frete |
 | `usuario` | Usuários do sistema com perfil e hash de senha |
-| `solicitacao_frete` | Solicitações de frete feitas pelos clientes |
 
 ### Diagrama de relacionamentos
 
@@ -355,8 +363,6 @@ motorista ──< frete
 veiculo ──< frete
 frete ──< ocorrencia_frete
 cliente ──< usuario
-cliente ──< solicitacao_frete
-usuario ──< solicitacao_frete (analise)
 ```
 
 ---
